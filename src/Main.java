@@ -216,7 +216,7 @@ label0:
         return false;
     }
 
-    private void DrawSlimers()
+    private void DrawSlimers(Graphics g)
     {
         int k1 = nWidth / 10;
         int j2 = nHeight / 10;
@@ -226,17 +226,17 @@ label0:
         int l3 = (4 * nHeight) / 5 - (ballY * nHeight) / 1000;
         int i = (p1OldX * nWidth) / 1000 - k1 / 2;
         int l = (7 * nHeight) / 10 - (p1OldY * nHeight) / 1000;
-        screen.setColor(Color.blue);
-        screen.fillRect(i, l, k1, j2);
+        g.setColor(Color.blue);
+        g.fillRect(i, l, k1, j2);
         i = (p2OldX * nWidth) / 1000 - k1 / 2;
         l = (7 * nHeight) / 10 - (p2OldY * nHeight) / 1000;
-        screen.setColor(Color.blue);
-        screen.fillRect(i, l, k1, j2);
+        g.setColor(Color.blue);
+        g.fillRect(i, l, k1, j2);
         MoveBall();
         i = (p1X * nWidth) / 1000 - k1 / 2;
         l = (7 * nHeight) / 10 - (p1Y * nHeight) / 1000;
-        screen.setColor((scoringRun <= -scoringRunForSuper) ? slimeColours[frenzyCol = ((frenzyCol + 1) % slimeColours.length)] : slimeColours[p1Col]);
-        screen.fillArc(i, l, k1, 2 * j2, 0, 180);
+        g.setColor((scoringRun <= -scoringRunForSuper) ? slimeColours[frenzyCol = ((frenzyCol + 1) % slimeColours.length)] : slimeColours[p1Col]);
+        g.fillArc(i, l, k1, 2 * j2, 0, 180);
         int l4 = p1X + 38;
         int i5 = p1Y - 60;
         i = (l4 * nWidth) / 1000;
@@ -249,12 +249,12 @@ label0:
             p1Blink = 5;
         if(p1Blink == 0)
         {
-            screen.setColor(Color.white);
-            screen.fillOval(i - i3, l - j3, i3, j3);
+            g.setColor(Color.white);
+            g.fillOval(i - i3, l - j3, i3, j3);
             if(k4 > 0 && !flag)
             {
-                screen.setColor(Color.black);
-                screen.fillOval(i - (4 * i4) / k4 - (3 * i3) / 4, l - (4 * j4) / k4 - (3 * j3) / 4, i3 / 2, j3 / 2);
+                g.setColor(Color.black);
+                g.fillOval(i - (4 * i4) / k4 - (3 * i3) / 4, l - (4 * j4) / k4 - (3 * j3) / 4, i3 / 2, j3 / 2);
             }
         } else
         {
@@ -262,8 +262,8 @@ label0:
         }
         i = (p2X * nWidth) / 1000 - k1 / 2;
         l = (7 * nHeight) / 10 - (p2Y * nHeight) / 1000;
-        screen.setColor((scoringRun >= scoringRunForSuper) ? slimeColours[frenzyCol = ((frenzyCol + 1) % slimeColours.length)] : slimeColours[p2Col]);
-        screen.fillArc(i, l, k1, 2 * j2, 0, 180);
+        g.setColor((scoringRun >= scoringRunForSuper) ? slimeColours[frenzyCol = ((frenzyCol + 1) % slimeColours.length)] : slimeColours[p2Col]);
+        g.fillArc(i, l, k1, 2 * j2, 0, 180);
         l4 = p2X - 18;
         i5 = p2Y - 60;
         i = (l4 * nWidth) / 1000;
@@ -276,12 +276,12 @@ label0:
             p2Blink = 5;
         if(p2Blink == 0)
         {
-            screen.setColor(flag ? Color.gray : Color.white);
-            screen.fillOval(i - i3, l - j3, i3, j3);
+            g.setColor(flag ? Color.gray : Color.white);
+            g.fillOval(i - i3, l - j3, i3, j3);
             if(k4 > 0 && !flag)
             {
-                screen.setColor(Color.black);
-                screen.fillOval(i - (4 * i4) / k4 - (3 * i3) / 4, l - (4 * j4) / k4 - (3 * j3) / 4, i3 / 2, j3 / 2);
+                g.setColor(Color.black);
+                g.fillOval(i - (4 * i4) / k4 - (3 * i3) / 4, l - (4 * j4) / k4 - (3 * j3) / 4, i3 / 2, j3 / 2);
             }
         } else
         {
@@ -296,8 +296,8 @@ label0:
             int j5 = 0;
             do
             {
-                screen.setColor(Color.black);
-                screen.drawArc(j, i1 + j5, l1, k2, -30, -150);
+                g.setColor(Color.black);
+                g.drawArc(j, i1 + j5, l1, k2, -30, -150);
             } while(++j5 < 3);
             return;
         }
@@ -310,8 +310,8 @@ label0:
             int k5 = 0;
             do
             {
-                screen.setColor(Color.black);
-                screen.drawArc(k, j1 + k5, i2, l2, -10, -150);
+                g.setColor(Color.black);
+                g.drawArc(k, j1 + k5, i2, l2, -10, -150);
             } while(++k5 < 3);
         }
     }
@@ -381,7 +381,7 @@ label0:
             screen.setColor(Color.blue);
             screen.fillRect(j, k - i1, l, i1 * 2);
         }
-        DrawSlimers();
+        DrawSlimers(screen);
         try
         {
             Thread.sleep(20L);
@@ -647,7 +647,7 @@ label0:
             ballOldX = ballX;
             ballOldY = ballY;
             MoveSlimers();
-            DrawSlimers();
+            DrawSlimers(screen);
             DrawStatus();
             if(ballY < 35)
             {
