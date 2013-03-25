@@ -1,4 +1,14 @@
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Panel;
+
+import javax.swing.JFrame;
+
 
 public class SlimeV2 extends Panel implements Runnable, Constants {
     int nWidth;
@@ -526,10 +536,10 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
 
     public static void main(String args[]) {
         SlimeV2 p;
-        Frame f;
+        JFrame f;
         Graphics g;
         p = new SlimeV2();
-        f = new Frame();
+        f = new JFrame();
         f.add(p);
         f.pack();
         p.nWidth = p.size().width;
@@ -539,6 +549,8 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         g = p.getGraphics();
         g.setFont(new Font(g.getFont().getName(), 1, 15));
         f.show();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
     }
 
 }
