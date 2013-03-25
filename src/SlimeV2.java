@@ -13,6 +13,7 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
     Side sides[];
     Player players[];
     Ball balls[];
+    SlimeAI ai[];
 
     /**
      * *******************************************************************
@@ -30,6 +31,8 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         players = new Player[2];
         players[0] = new Player(sides[0], 200);
         players[1] = new Player(sides[1], 800);
+        ai = new SlimeAI[2];
+        ai[0] = new DumbSlimeAI(this, players[1]);
 
         balls = new Ball[1];
         balls[0] = new Ball(this, 200, 400);
@@ -41,6 +44,7 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
 
     public Dimension getPreferredSize() {
         return new Dimension(640, 480);
+        //return new Dimension(400, 320);
     }
 
     /**
@@ -451,6 +455,7 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         while (!game_over) {
             gameTime = System.currentTimeMillis() - startTime;
 
+            processAIcommands();
             updateParticipantsState();
             drawParticipantsOnto(g);
             drawStatus(g);
@@ -486,6 +491,10 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         repaint();
     }
 
+    private void processAIcommands() {
+        ai[0].moveSlime();
+    }
+
     /**
      * *******************************************************************
      */
@@ -497,14 +506,14 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         fInPlay = true;
         nPointsScored = 0;
         promptMsg = "";
-        for (int i = 0; i < sides.length; i++) {
-            sides[i].resetState();
+        for (Side side : sides) {
+            side.resetState();
         }
-        for (int i = 0; i < players.length; i++) {
-            players[i].resetState();
+        for (Player player : players) {
+            player.resetState();
         }
-        for (int i = 0; i < balls.length; i++) {
-            balls[i].resetState();
+        for (Ball ball : balls) {
+            ball.resetState();
         }
         repaint();
         game_thread = new Thread(this);
