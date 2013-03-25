@@ -32,7 +32,7 @@ public class DumbSlimeAI extends SlimeAI {
     {
         int j = howManyFrames(i);
         int k = slimeGame.balls[0].ballX;
-        int l = slimeGame.balls[0].ballY;
+        int l = slimeGame.balls[0].ballVX;
         for(int i1 = 0; i1 < j; i1++)
         {
             k += l;
@@ -143,7 +143,7 @@ public class DumbSlimeAI extends SlimeAI {
         {
             if(Math.abs(player2.playerX - i) < j)
             {
-                stopMoveLeft(); stopMoveRight();;
+                stopMoveLeft(); stopMoveRight();
                 return;
             }
             if(i + j < player2.playerX)
