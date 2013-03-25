@@ -67,7 +67,7 @@ public class DumbSlimeAI extends SlimeAI {
         int i = whereWillBallCross(125);
         howManyFrames(125);
         int j;
-        if(player2.playerY != 0 && slimeGame.players[1].playerX < 575)
+        if(player2.playerY != 0 && player2.playerX < 575)
             j = 0;
         else
             j = 23 + (int)(15D * Math.random());

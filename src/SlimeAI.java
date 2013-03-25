@@ -35,7 +35,7 @@ abstract class SlimeAI
     }
 
     protected final void stopMoveRight() {
-        player.stopMoveLeft();
+        player.stopMoveRight();
     }
 
 }
