@@ -42,7 +42,7 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         players[0] = new Player(sides[0], 200);
         players[1] = new Player(sides[1], 800);
         ai = new SlimeAI[2];
-        ai[0] = new DumbSlimeAI(this, players[1]);
+        ai[0] = new CrapSlimeAI(this, players[1]);
 
         balls = new Ball[1];
         balls[0] = new Ball(this, 200, 400);
