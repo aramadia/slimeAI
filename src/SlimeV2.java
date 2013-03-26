@@ -40,7 +40,7 @@ public class SlimeV2 implements Runnable, Constants {
         players[1] = new Player(sides[1], 800);
         ai = new SlimeAI[2];
         ai[0] = new CrapSlimeAI(this, players[1]);
-
+//        ai[1] = new LoseAI(this, players[0]);
         balls = new Ball[1];
         balls[0] = new Ball(this, 200, 400);
     }
@@ -214,7 +214,11 @@ public class SlimeV2 implements Runnable, Constants {
     }
 
     private void processAIcommands() {
-        ai[0].moveSlime();
+        for (SlimeAI slimeAI : ai) {
+            if (slimeAI != null) {
+                slimeAI.moveSlime();
+            }
+        }
     }
 
 
