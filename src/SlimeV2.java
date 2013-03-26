@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 
 public class SlimeV2 implements Runnable, Constants {
     SlimePanel panel = new SlimePanel();
+    boolean shouldDraw;
     int nWidth;
     int nHeight;
     int nPointsScored;
@@ -26,7 +27,8 @@ public class SlimeV2 implements Runnable, Constants {
     SlimeAI ai[];
 
 
-    public SlimeV2() {
+    public SlimeV2(boolean draw, SlimeAI ai1, SlimeAI ai2) {
+        shouldDraw = draw;
         sides = new Side[2];
         sides[0] = new Side(this, true,
                 50, 445,
@@ -38,9 +40,17 @@ public class SlimeV2 implements Runnable, Constants {
         players = new Player[2];
         players[0] = new Player(sides[0], 200);
         players[1] = new Player(sides[1], 800);
+
         ai = new SlimeAI[2];
-        ai[0] = new CrapSlimeAI(this, players[1]);
-//        ai[1] = new LoseAI(this, players[0]);
+        if (ai1 != null) {
+            ai1.initialize(this, players[0]);
+        }
+        if (ai2 != null) {
+            ai2.initialize(this, players[1]);
+        }
+        ai[0] = ai1;
+        ai[1] = ai2;
+
         balls = new Ball[1];
         balls[0] = new Ball(this, 200, 400);
     }
@@ -81,7 +91,7 @@ public class SlimeV2 implements Runnable, Constants {
         boolean ball_touched;
         int i;
 
-    /* Updates scores */
+        /* Updates scores */
         nPointsScored++;
         if (lost_at <= 500) {
             sides[0].awardPoints(-1);
@@ -91,8 +101,8 @@ public class SlimeV2 implements Runnable, Constants {
             sides[1].awardPoints(-1);
         }
     
-    /* Check if any side touched the ball or if any side is out
-     * of lives. */
+        /* Check if any side touched the ball or if any side is out
+         * of lives. */
         ball_touched = false;
         game_over = false;
         for (i = 0; i < sides.length; i++) {
@@ -100,7 +110,7 @@ public class SlimeV2 implements Runnable, Constants {
             game_over |= (sides[i].getScore() == 0);
         }
 
-    /* Build prompt */
+        /* Build prompt */
         promptMsg = (lost_at <= 500 ? sides[1].toString() : sides[0].toString());
         promptMsg += " ";
 
@@ -145,16 +155,19 @@ public class SlimeV2 implements Runnable, Constants {
                     break;
             }
 
-    /* Update the prompt */
+        /* Update the prompt */
+        System.out.println(promptMsg);
         panel.drawPrompt();
-        try {
-            Thread.sleep(2500L);
-        } catch (InterruptedException _ex) {
+        if (shouldDraw) {
+            try {
+                Thread.sleep(2500L);
+            } catch (InterruptedException _ex) {
+            }
         }
         promptMsg = "";
         panel.drawPrompt();
     
-    /* Restore state for the next point */
+        /* Restore state for the next point */
         if (!game_over) {
             for (i = 0; i < players.length; i++) {
                 players[i].resetState();
@@ -201,11 +214,15 @@ public class SlimeV2 implements Runnable, Constants {
             }
 
 	        /* Wait 20ms before next update */
-            try {
-                Thread.sleep(20L);
-            } catch (InterruptedException _ex) {
+            if (shouldDraw) {
+                try {
+                    Thread.sleep(20L);
+                } catch (InterruptedException _ex) {
+                }
             }
         }
+
+        System.out.println("GAME OVER!!!!");
 
         fEndGame = true;
         fInPlay = false;
@@ -245,18 +262,30 @@ public class SlimeV2 implements Runnable, Constants {
 
 
     public static void main(String args[]) {
-        SlimeV2 p = new SlimeV2();
-        JFrame f = new JFrame();
+        int winner = determineVictor(false, new LoseAI(), new CrapSlimeAI());
+        System.out.println("winner = " + winner);
+    }
 
-        f.add(p.panel);
-        f.pack();
-        p.nWidth = p.panel.size().width;
-        p.nHeight = p.panel.size().height;
-        p.fInPlay = p.fEndGame = false;
-        p.promptMsg = "Click the mouse to play...";
-        p.panel.setFont();
-        f.show();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private static int determineVictor(boolean draw, SlimeAI ai1, SlimeAI ai2) {
+        SlimeV2 game = new SlimeV2(draw, ai1, ai2);
+
+        if (draw) {
+            JFrame f = new JFrame();
+
+            f.add(game.panel);
+            f.pack();
+            game.nWidth = game.panel.size().width;
+            game.nHeight = game.panel.size().height;
+            game.fInPlay = game.fEndGame = false;
+            game.promptMsg = "Click the mouse to play...";
+            game.panel.setFont();
+            f.show();
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        } else {
+            game.startGame();
+        }
+
+        return 0; // TODO return the winner
     }
 
     /**
@@ -292,6 +321,7 @@ public class SlimeV2 implements Runnable, Constants {
                     switch (event.key) {
                         case 'A':
                         case 'a':
+                            System.out.println("move left!");
                             players[0].startMoveLeft();
                             break;
 
@@ -367,6 +397,8 @@ public class SlimeV2 implements Runnable, Constants {
 
         @Override
         public void paint(Graphics g) {
+            if (!shouldDraw) return;
+
             int ground_pos;
             int ground_size;
             int net_pos;
@@ -403,23 +435,28 @@ public class SlimeV2 implements Runnable, Constants {
                 g.setFont(new Font(g.getFont().getName(), 1, 15));
                 fm = g.getFontMetrics();
                 g.setColor(Color.white);
-                drawCentered(g, "Slime Volleyball!",
+                drawCentered("Slime Volleyball!",
                         nHeight / 2 - fm.getHeight());
 
                 g.setFont(new Font(g.getFont().getName(), 1, 12));
                 fm = g.getFontMetrics();
                 g.setColor(Color.white);
-                drawCentered(g, "Original by Quin Pendragon",
+                drawCentered("Original by Quin Pendragon",
                         nHeight / 2 + fm.getHeight() * 2);
             }
         }
 
         public void setFont() {
+            if (!shouldDraw) return;
+
             Graphics g = getGraphics();
             g.setFont(new Font(g.getFont().getName(), Font.BOLD, 15));
         }
 
-        public void drawCentered(Graphics g, String s, int y) {
+        public void drawCentered(String s, int y) {
+            if (!shouldDraw) return;
+
+            Graphics g = getGraphics();
             FontMetrics fontmetrics = g.getFontMetrics();
 
             g.drawString(s,
@@ -428,14 +465,17 @@ public class SlimeV2 implements Runnable, Constants {
         }
 
         public void drawPrompt(String s) {
+            if (!shouldDraw) return;
+
             Graphics g = getGraphics();
             FontMetrics fm = g.getFontMetrics();
             g.setColor(Color.lightGray);
-            drawCentered(g, s,
-                    (nHeight * 4) / 5 + fm.getHeight() + 10);
+            drawCentered(s, (nHeight * 4) / 5 + fm.getHeight() + 10);
         }
 
         public void drawPrompt() {
+            if (!shouldDraw) return;
+
             Graphics g = getGraphics();
             g.setColor(Color.gray);
             g.fillRect(0, (4 * nHeight) / 5 + 6, nWidth, nHeight / 5 - 10);
@@ -443,6 +483,8 @@ public class SlimeV2 implements Runnable, Constants {
         }
 
         void drawStatus() {
+            if (!shouldDraw) return;
+
             Graphics g = getGraphics();
             FontMetrics fm = g.getFontMetrics();
             int i = nHeight / 20;
@@ -460,6 +502,8 @@ public class SlimeV2 implements Runnable, Constants {
         }
 
         void drawScores() {
+            if (!shouldDraw) return;
+
             Graphics g = getGraphics();
             int i;
             int k = nHeight / 20;
@@ -472,6 +516,8 @@ public class SlimeV2 implements Runnable, Constants {
         }
 
         public void drawParticipantsOnto() {
+            if (!shouldDraw) return;
+
             Graphics g = getGraphics();
             int i;
             for (i = 0; i < players.length; i++) {

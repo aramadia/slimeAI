@@ -8,12 +8,8 @@ public class CrapSlimeAI extends SlimeAI {
 	boolean p2Fire;
 	
 
-	CrapSlimeAI(SlimeV2 slimeGame, Player player) {
-		super(slimeGame, player);
-		// TODO Auto-generated constructor stub
-		
-//		 slimeGame.team = 4;
-	        serveType = -1;
+	CrapSlimeAI() {
+        serveType = -1;
 	}
 
 	@Override

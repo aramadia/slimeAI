@@ -8,10 +8,10 @@
 abstract class SlimeAI
 {
 
-    protected final SlimeV2 slimeGame;
-    protected final Player player;
+    protected SlimeV2 slimeGame;
+    protected Player player;
 
-    SlimeAI(SlimeV2 slimeGame, Player player) {
+    public void initialize(SlimeV2 slimeGame, Player player) {
         this.slimeGame = slimeGame;
         this.player = player;
     }
