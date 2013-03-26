@@ -4,13 +4,13 @@ import java.awt.Event;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Panel;
 
 import javax.swing.JFrame;
 
 
-public class SlimeV2 extends Panel implements Runnable, Constants {
+public class SlimeV2 implements Runnable, Constants {
+    SlimePanel panel = new SlimePanel();
     int nWidth;
     int nHeight;
     int nPointsScored;
@@ -25,9 +25,6 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
     Ball balls[];
     SlimeAI ai[];
 
-    /**
-     * *******************************************************************
-     */
 
     public SlimeV2() {
         sides = new Side[2];
@@ -47,19 +44,6 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         balls = new Ball[1];
         balls[0] = new Ball(this, 200, 400);
     }
-
-    /**
-     * *******************************************************************
-     */
-
-    public Dimension getPreferredSize() {
-        return new Dimension(640, 480);
-        //return new Dimension(400, 320);
-    }
-
-    /**
-     * *******************************************************************
-     */
 
     public int getGroundPos(int height) {
         return (4 * height) / 5;
@@ -81,266 +65,6 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         return 4;
     }
 
-    /**
-     * *******************************************************************
-     */
-
-    public boolean handleEvent(Event event) {
-        switch (event.id) {
-            default:
-                break;
-
-            case Event.MOUSE_MOVE:
-                break;
-
-            case Event.MOUSE_DOWN:
-                mousePressed = true;
-                if (!fInPlay) {
-                    startGame();
-                }
-                break;
-
-            case Event.KEY_ACTION:
-            case Event.KEY_PRESS:
-                if (fEndGame)
-                    break;
-                switch (event.key) {
-                    case 'A':
-                    case 'a':
-                        players[0].startMoveLeft();
-                        break;
-
-                    case 'D':
-                    case 'd':
-                        players[0].startMoveRight();
-                        break;
-
-                    case 'W':
-                    case 'w':
-                        players[0].startJump();
-                        break;
-
-                    case Event.LEFT:
-                    case 'J':
-                    case 'j':
-                        players[1].startMoveLeft();
-                        break;
-
-                    case Event.RIGHT:
-                    case 'L':
-                    case 'l':
-                        players[1].startMoveRight();
-                        break;
-
-                    case Event.UP:
-                    case 'I':
-                    case 'i':
-                        players[1].startJump();
-                        break;
-
-                    case ' ':
-                        mousePressed = true;
-                        break;
-
-                    default:
-                        break;
-                }
-                break;
-
-            case Event.KEY_ACTION_RELEASE:
-            case Event.KEY_RELEASE:
-                switch (event.key) {
-                    case 'A':
-                    case 'a':
-                        players[0].stopMoveLeft();
-                        break;
-
-                    case 'D':
-                    case 'd':
-                        players[0].stopMoveRight();
-                        break;
-
-                    case Event.LEFT:
-                    case 'J':
-                    case 'j':
-                        players[1].stopMoveLeft();
-                        break;
-
-                    case Event.RIGHT:
-                    case 'L':
-                    case 'l':
-                        players[1].stopMoveRight();
-                        break;
-
-                    default:
-                        break;
-                }
-                break;
-        }
-        return false;
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    public void drawCentered(Graphics g, String s, int y) {
-        FontMetrics fontmetrics = g.getFontMetrics();
-
-        g.drawString(s,
-                (nWidth / 2) - (fontmetrics.stringWidth(s) / 2),
-                y);
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    public void paint(Graphics g) {
-        int ground_pos;
-        int ground_size;
-        int net_pos;
-        int net_height;
-        int net_width;
-
-        nWidth = size().width;
-        nHeight = size().height;
-
-    /* Draw sky and ground */
-        ground_pos = getGroundPos(nHeight);
-        ground_size = getGroundSize(nHeight);
-        g.setColor(Color.blue);
-        g.fillRect(0, 0, nWidth, ground_pos);
-        g.setColor(Color.gray);
-        g.fillRect(0, ground_pos, nWidth, nHeight / 5);
-
-    /* Draw net */
-        net_pos = getNetPos(nHeight);
-        net_height = getNetHeight(nHeight);
-        net_width = getNetWidth(nWidth);
-        g.setColor(Color.white);
-        g.fillRect(nWidth / 2 - (net_width / 2), net_pos,
-                net_width, net_height);
-
-    /* Draw other details */
-        drawScores(g);
-        drawPrompt(g);
-
-    /* Draw prompt for starting the game */
-        if (!fInPlay) {
-            FontMetrics fm;
-
-            g.setFont(new Font(g.getFont().getName(), 1, 15));
-            fm = g.getFontMetrics();
-            g.setColor(Color.white);
-            drawCentered(g, "Slime Volleyball!",
-                    nHeight / 2 - fm.getHeight());
-
-            g.setFont(new Font(g.getFont().getName(), 1, 12));
-            fm = g.getFontMetrics();
-            g.setColor(Color.white);
-            drawCentered(g, "Original by Quin Pendragon",
-                    nHeight / 2 + fm.getHeight() * 2);
-        }
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    String microsecsToTime(long l) {
-        long l1 = (l / 10L) % 100L;
-        long l2 = (l / 1000L) % 60L;
-        long l3 = (l / 60000L) % 60L;
-        long l4 = l / 0x36ee80L;
-        String s = "";
-        if (l4 < 10L)
-            s += "0";
-        s += l4;
-        s += ":";
-        if (l3 < 10L)
-            s += "0";
-        s += l3;
-        s += ":";
-        if (l2 < 10L)
-            s += "0";
-        s += l2;
-        s += ":";
-        if (l1 < 10L)
-            s += "0";
-        s += l1;
-        return s;
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    public void drawPrompt(Graphics g, String s) {
-        FontMetrics fm = g.getFontMetrics();
-        g.setColor(Color.lightGray);
-        drawCentered(g, s,
-                (nHeight * 4) / 5 + fm.getHeight() + 10);
-    }
-
-    public void drawPrompt(Graphics g) {
-        g.setColor(Color.gray);
-        g.fillRect(0, (4 * nHeight) / 5 + 6, nWidth, nHeight / 5 - 10);
-        drawPrompt(g, promptMsg);
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    void drawStatus(Graphics g) {
-        FontMetrics fm = g.getFontMetrics();
-        int i = nHeight / 20;
-        g.setColor(Color.blue);
-        int j = nWidth / 2 + ((sides[0].score - 5) * nWidth) / 24;
-
-        String s = ("Points: " + nPointsScored +
-                "   Elapsed: " + microsecsToTime(gameTime));
-
-        int k = fm.stringWidth(s);
-
-        g.fillRect(j - k / 2 - 5, 0, k + 10, i + 22);
-        g.setColor(Color.white);
-        g.drawString(s, j - k / 2, fm.getAscent() + 20);
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    void drawScores(Graphics g) {
-        int i;
-        int k = nHeight / 20;
-
-        g.setColor(Color.blue);
-        g.fillRect(0, 0, nWidth, k + 22);
-        for (i = 0; i < sides.length; i++) {
-            sides[i].drawScoreOnto(g);
-        }
-    }
-
-    /**
-     * *******************************************************************
-     */
-
-    public void drawParticipantsOnto(Graphics g) {
-        int i;
-        for (i = 0; i < players.length; i++) {
-            players[i].drawOnto(g);
-        }
-        for (i = 0; i < balls.length; i++) {
-            balls[i].drawOnto(g);
-        }
-    }
-
-    /**
-     * *******************************************************************
-     */
 
     public void updateParticipantsState() {
         int i;
@@ -351,10 +75,6 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
             balls[i].updateState();
         }
     }
-
-    /**
-     * *******************************************************************
-     */
 
     public boolean ballLostAt(Graphics g, Ball b, int lost_at) {
         boolean game_over;
@@ -426,13 +146,13 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
             }
 
     /* Update the prompt */
-        drawPrompt(g);
+        panel.drawPrompt(g);
         try {
             Thread.sleep(2500L);
         } catch (InterruptedException _ex) {
         }
         promptMsg = "";
-        drawPrompt(g);
+        panel.drawPrompt(g);
     
     /* Restore state for the next point */
         if (!game_over) {
@@ -443,15 +163,11 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
                 balls[i].resetState();
             }
             b.ballX = (lost_at >= 500) ? 200 : 800;
-            repaint();
+            panel.repaint();
         }
 
         return game_over;
     }
-
-    /**
-     * *******************************************************************
-     */
 
     public void run() {
         Graphics g;
@@ -459,7 +175,7 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         int i;
 
     /* Get a graphics context for updating the screen */
-        g = getGraphics();
+        g = panel.getGraphics();
 
         startTime = System.currentTimeMillis();
         while (!game_over) {
@@ -467,8 +183,8 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
 
             processAIcommands();
             updateParticipantsState();
-            drawParticipantsOnto(g);
-            drawStatus(g);
+            panel.drawParticipantsOnto(g);
+            panel.drawStatus(g);
 
 	/* Check if any of the balls have hit the floor */
 
@@ -498,7 +214,7 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         fEndGame = true;
         fInPlay = false;
         promptMsg = "Click the mouse to play...";
-        repaint();
+        panel.repaint();
     }
 
     private void processAIcommands() {
@@ -525,32 +241,260 @@ public class SlimeV2 extends Panel implements Runnable, Constants {
         for (Ball ball : balls) {
             ball.resetState();
         }
-        repaint();
+        panel.repaint();
         game_thread = new Thread(this);
         game_thread.start();
     }
 
-    /**
-     * *******************************************************************
-     */
-
     public static void main(String args[]) {
-        SlimeV2 p;
-        JFrame f;
-        Graphics g;
-        p = new SlimeV2();
-        f = new JFrame();
-        f.add(p);
+        SlimeV2 p = new SlimeV2();
+        JFrame f = new JFrame();
+
+        f.add(p.panel);
         f.pack();
-        p.nWidth = p.size().width;
-        p.nHeight = p.size().height;
+        p.nWidth = p.panel.size().width;
+        p.nHeight = p.panel.size().height;
         p.fInPlay = p.fEndGame = false;
         p.promptMsg = "Click the mouse to play...";
-        g = p.getGraphics();
+        Graphics g = p.panel.getGraphics();
         g.setFont(new Font(g.getFont().getName(), 1, 15));
         f.show();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+    }
+
+    private class SlimePanel extends Panel {
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(640, 480);
+        }
+
+        @Override
+        public boolean handleEvent(Event event) {
+            switch (event.id) {
+                default:
+                    break;
+
+                case Event.MOUSE_MOVE:
+                    break;
+
+                case Event.MOUSE_DOWN:
+                    mousePressed = true;
+                    if (!fInPlay) {
+                        startGame();
+                    }
+                    break;
+
+                case Event.KEY_ACTION:
+                case Event.KEY_PRESS:
+                    if (fEndGame)
+                        break;
+                    switch (event.key) {
+                        case 'A':
+                        case 'a':
+                            players[0].startMoveLeft();
+                            break;
+
+                        case 'D':
+                        case 'd':
+                            players[0].startMoveRight();
+                            break;
+
+                        case 'W':
+                        case 'w':
+                            players[0].startJump();
+                            break;
+
+                        case Event.LEFT:
+                        case 'J':
+                        case 'j':
+                            players[1].startMoveLeft();
+                            break;
+
+                        case Event.RIGHT:
+                        case 'L':
+                        case 'l':
+                            players[1].startMoveRight();
+                            break;
+
+                        case Event.UP:
+                        case 'I':
+                        case 'i':
+                            players[1].startJump();
+                            break;
+
+                        case ' ':
+                            mousePressed = true;
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+
+                case Event.KEY_ACTION_RELEASE:
+                case Event.KEY_RELEASE:
+                    switch (event.key) {
+                        case 'A':
+                        case 'a':
+                            players[0].stopMoveLeft();
+                            break;
+
+                        case 'D':
+                        case 'd':
+                            players[0].stopMoveRight();
+                            break;
+
+                        case Event.LEFT:
+                        case 'J':
+                        case 'j':
+                            players[1].stopMoveLeft();
+                            break;
+
+                        case Event.RIGHT:
+                        case 'L':
+                        case 'l':
+                            players[1].stopMoveRight();
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            int ground_pos;
+            int ground_size;
+            int net_pos;
+            int net_height;
+            int net_width;
+
+            nWidth = size().width;
+            nHeight = size().height;
+
+            /* Draw sky and ground */
+            ground_pos = getGroundPos(nHeight);
+            ground_size = getGroundSize(nHeight);
+            g.setColor(Color.blue);
+            g.fillRect(0, 0, nWidth, ground_pos);
+            g.setColor(Color.gray);
+            g.fillRect(0, ground_pos, nWidth, nHeight / 5);
+
+            /* Draw net */
+            net_pos = getNetPos(nHeight);
+            net_height = getNetHeight(nHeight);
+            net_width = getNetWidth(nWidth);
+            g.setColor(Color.white);
+            g.fillRect(nWidth / 2 - (net_width / 2), net_pos,
+                    net_width, net_height);
+
+             /* Draw other details */
+            drawScores(g);
+            drawPrompt(g);
+
+            /* Draw prompt for starting the game */
+            if (!fInPlay) {
+                FontMetrics fm;
+
+                g.setFont(new Font(g.getFont().getName(), 1, 15));
+                fm = g.getFontMetrics();
+                g.setColor(Color.white);
+                drawCentered(g, "Slime Volleyball!",
+                        nHeight / 2 - fm.getHeight());
+
+                g.setFont(new Font(g.getFont().getName(), 1, 12));
+                fm = g.getFontMetrics();
+                g.setColor(Color.white);
+                drawCentered(g, "Original by Quin Pendragon",
+                        nHeight / 2 + fm.getHeight() * 2);
+            }
+        }
+
+        public void drawCentered(Graphics g, String s, int y) {
+            FontMetrics fontmetrics = g.getFontMetrics();
+
+            g.drawString(s,
+                    (nWidth / 2) - (fontmetrics.stringWidth(s) / 2),
+                    y);
+        }
+
+        public void drawPrompt(Graphics g, String s) {
+            FontMetrics fm = g.getFontMetrics();
+            g.setColor(Color.lightGray);
+            drawCentered(g, s,
+                    (nHeight * 4) / 5 + fm.getHeight() + 10);
+        }
+
+        public void drawPrompt(Graphics g) {
+            g.setColor(Color.gray);
+            g.fillRect(0, (4 * nHeight) / 5 + 6, nWidth, nHeight / 5 - 10);
+            drawPrompt(g, promptMsg);
+        }
+
+        void drawStatus(Graphics g) {
+            FontMetrics fm = g.getFontMetrics();
+            int i = nHeight / 20;
+            g.setColor(Color.blue);
+            int j = nWidth / 2 + ((sides[0].score - 5) * nWidth) / 24;
+
+            String s = ("Points: " + nPointsScored +
+                    "   Elapsed: " + microsecsToTime(gameTime));
+
+            int k = fm.stringWidth(s);
+
+            g.fillRect(j - k / 2 - 5, 0, k + 10, i + 22);
+            g.setColor(Color.white);
+            g.drawString(s, j - k / 2, fm.getAscent() + 20);
+        }
+
+        void drawScores(Graphics g) {
+            int i;
+            int k = nHeight / 20;
+
+            g.setColor(Color.blue);
+            g.fillRect(0, 0, nWidth, k + 22);
+            for (i = 0; i < sides.length; i++) {
+                sides[i].drawScoreOnto(g);
+            }
+        }
+
+        public void drawParticipantsOnto(Graphics g) {
+            int i;
+            for (i = 0; i < players.length; i++) {
+                players[i].drawOnto(g);
+            }
+            for (i = 0; i < balls.length; i++) {
+                balls[i].drawOnto(g);
+            }
+        }
+
+        String microsecsToTime(long l) {
+            long l1 = (l / 10L) % 100L;
+            long l2 = (l / 1000L) % 60L;
+            long l3 = (l / 60000L) % 60L;
+            long l4 = l / 0x36ee80L;
+            String s = "";
+            if (l4 < 10L)
+                s += "0";
+            s += l4;
+            s += ":";
+            if (l3 < 10L)
+                s += "0";
+            s += l3;
+            s += ":";
+            if (l2 < 10L)
+                s += "0";
+            s += l2;
+            s += ":";
+            if (l1 < 10L)
+                s += "0";
+            s += l1;
+            return s;
+        }
     }
 
 }
