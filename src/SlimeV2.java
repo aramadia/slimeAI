@@ -76,7 +76,7 @@ public class SlimeV2 implements Runnable, Constants {
         }
     }
 
-    public boolean ballLostAt(Graphics g, Ball b, int lost_at) {
+    public boolean ballLostAt(Ball b, int lost_at) {
         boolean game_over;
         boolean ball_touched;
         int i;
@@ -146,13 +146,13 @@ public class SlimeV2 implements Runnable, Constants {
             }
 
     /* Update the prompt */
-        panel.drawPrompt(g);
+        panel.drawPrompt();
         try {
             Thread.sleep(2500L);
         } catch (InterruptedException _ex) {
         }
         promptMsg = "";
-        panel.drawPrompt(g);
+        panel.drawPrompt();
     
     /* Restore state for the next point */
         if (!game_over) {
@@ -170,12 +170,8 @@ public class SlimeV2 implements Runnable, Constants {
     }
 
     public void run() {
-        Graphics g;
         boolean game_over = false;
         int i;
-
-    /* Get a graphics context for updating the screen */
-        g = panel.getGraphics();
 
         startTime = System.currentTimeMillis();
         while (!game_over) {
@@ -183,10 +179,10 @@ public class SlimeV2 implements Runnable, Constants {
 
             processAIcommands();
             updateParticipantsState();
-            panel.drawParticipantsOnto(g);
-            panel.drawStatus(g);
+            panel.drawParticipantsOnto();
+            panel.drawStatus();
 
-	/* Check if any of the balls have hit the floor */
+	        /* Check if any of the balls have hit the floor */
 
             for (i = 0; i < balls.length; i++) {
                 boolean is_lost;
@@ -199,12 +195,12 @@ public class SlimeV2 implements Runnable, Constants {
                     long l;
 
                     l = System.currentTimeMillis();
-                    game_over = ballLostAt(g, b, lost_at);
+                    game_over = ballLostAt(b, lost_at);
                     startTime += System.currentTimeMillis() - l;
                 }
             }
 
-	/* Wait 20ms before next update */
+	        /* Wait 20ms before next update */
             try {
                 Thread.sleep(20L);
             } catch (InterruptedException _ex) {
@@ -221,9 +217,6 @@ public class SlimeV2 implements Runnable, Constants {
         ai[0].moveSlime();
     }
 
-    /**
-     * *******************************************************************
-     */
 
     public void startGame() {
         Thread game_thread;
@@ -246,6 +239,7 @@ public class SlimeV2 implements Runnable, Constants {
         game_thread.start();
     }
 
+
     public static void main(String args[]) {
         SlimeV2 p = new SlimeV2();
         JFrame f = new JFrame();
@@ -256,12 +250,14 @@ public class SlimeV2 implements Runnable, Constants {
         p.nHeight = p.panel.size().height;
         p.fInPlay = p.fEndGame = false;
         p.promptMsg = "Click the mouse to play...";
-        Graphics g = p.panel.getGraphics();
-        g.setFont(new Font(g.getFont().getName(), 1, 15));
+        p.panel.setFont();
         f.show();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * GUI Panel
+     */
     private class SlimePanel extends Panel {
 
         @Override
@@ -393,8 +389,8 @@ public class SlimeV2 implements Runnable, Constants {
                     net_width, net_height);
 
              /* Draw other details */
-            drawScores(g);
-            drawPrompt(g);
+            drawScores();
+            drawPrompt();
 
             /* Draw prompt for starting the game */
             if (!fInPlay) {
@@ -414,6 +410,11 @@ public class SlimeV2 implements Runnable, Constants {
             }
         }
 
+        public void setFont() {
+            Graphics g = getGraphics();
+            g.setFont(new Font(g.getFont().getName(), Font.BOLD, 15));
+        }
+
         public void drawCentered(Graphics g, String s, int y) {
             FontMetrics fontmetrics = g.getFontMetrics();
 
@@ -422,20 +423,23 @@ public class SlimeV2 implements Runnable, Constants {
                     y);
         }
 
-        public void drawPrompt(Graphics g, String s) {
+        public void drawPrompt(String s) {
+            Graphics g = getGraphics();
             FontMetrics fm = g.getFontMetrics();
             g.setColor(Color.lightGray);
             drawCentered(g, s,
                     (nHeight * 4) / 5 + fm.getHeight() + 10);
         }
 
-        public void drawPrompt(Graphics g) {
+        public void drawPrompt() {
+            Graphics g = getGraphics();
             g.setColor(Color.gray);
             g.fillRect(0, (4 * nHeight) / 5 + 6, nWidth, nHeight / 5 - 10);
-            drawPrompt(g, promptMsg);
+            drawPrompt(promptMsg);
         }
 
-        void drawStatus(Graphics g) {
+        void drawStatus() {
+            Graphics g = getGraphics();
             FontMetrics fm = g.getFontMetrics();
             int i = nHeight / 20;
             g.setColor(Color.blue);
@@ -451,7 +455,8 @@ public class SlimeV2 implements Runnable, Constants {
             g.drawString(s, j - k / 2, fm.getAscent() + 20);
         }
 
-        void drawScores(Graphics g) {
+        void drawScores() {
+            Graphics g = getGraphics();
             int i;
             int k = nHeight / 20;
 
@@ -462,7 +467,8 @@ public class SlimeV2 implements Runnable, Constants {
             }
         }
 
-        public void drawParticipantsOnto(Graphics g) {
+        public void drawParticipantsOnto() {
+            Graphics g = getGraphics();
             int i;
             for (i = 0; i < players.length; i++) {
                 players[i].drawOnto(g);
