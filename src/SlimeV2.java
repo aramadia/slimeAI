@@ -290,6 +290,13 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         System.out.println("winner = " + winner);
     }
 
+    /**
+     *
+     * @param draw should draw the UI
+     * @param ai1 AI for player 1 (null for human player)
+     * @param ai2 AI for player 2 (null for human player)
+     * @return 0 if player1 wins, 1 if player2 wins
+     */
     private static int determineVictor(boolean draw, SlimeAI ai1, SlimeAI ai2) {
         SlimeV2 game = new SlimeV2(draw, ai1, ai2);
 
