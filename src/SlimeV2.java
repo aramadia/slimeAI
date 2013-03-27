@@ -288,6 +288,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         SlimeAI loseAI = new LoseAI();
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
+        SlimeAI dannoAI2 = new DannoAI2();
         int winner = determineVictor(true, human, dannoAI);
         System.out.println("winner = player " + winner);
     }
