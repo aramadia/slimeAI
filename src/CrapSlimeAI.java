@@ -6,12 +6,10 @@ public class CrapSlimeAI extends SlimeAI {
 	int p2X, p2Y;
 	int p1X, p1Y;
 	boolean p2Fire;
+
+    private final double JUMPINESS = 0.40000000000000002D;
+    private int serveType = -1;
 	
-
-	CrapSlimeAI() {
-        serveType = -1;
-	}
-
 	@Override
 	public void moveSlime() {
 		ball = slimeGame.balls[0];
@@ -22,12 +20,7 @@ public class CrapSlimeAI extends SlimeAI {
 		p2Fire = slimeGame.players[1].onScoringRun();
 		
 		doMoveSlime();
-
 	}
-	
-   
-       
-    
 
     private int square(int i)
     {
@@ -221,8 +214,5 @@ public class CrapSlimeAI extends SlimeAI {
             return;
         }
     }
-
-    private final double JUMPINESS = 0.40000000000000002D;
-    private int serveType;
 
 }
