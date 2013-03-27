@@ -9,29 +9,15 @@ public class DannoAI2 extends SlimeAI
 {
     private int serveType = -1;
 
-    Ball ball;
-
-    int p2X, p2Y;
-    int p1X, p1Y;
-    int p2YV;
-    boolean p2Fire;
-
     @Override
     public void moveSlime() {
-        ball = slimeGame.balls[0];
-        p2X = slimeGame.players[1].playerX;
-        p2Y = slimeGame.players[1].playerY;
-        p2YV = slimeGame.players[1].playerYV;
-        p1X = slimeGame.players[0].playerX;
-        p1Y = slimeGame.players[0].playerY;
-        p2Fire = slimeGame.players[1].onScoringRun();
-
+        setVars();
         doMoveSlime();
     }
 
     public void doMoveSlime()
     {
-        if(serveType != -1 || ball.ballX == 800 && ball.ballVX == 0)
+        if(serveType != -1 || ballX == 800 && ballVX == 0)
         {
             serve();
             return;
@@ -64,24 +50,24 @@ public class DannoAI2 extends SlimeAI
         else
         if(i + byte0 > p2X)
             move(1);
-        if((p2X <= 900 || Math.random() >= 0.40000000000000002D) && i >= 620 && (ball.ballY >= 130 || ball.ballVY >= 0) && (!p2Fire || Math.random() >= 0.59999999999999998D))
+        if((p2X <= 900 || Math.random() >= 0.40000000000000002D) && i >= 620 && (ballY >= 130 || ballVY >= 0) && (!p2Fire || Math.random() >= 0.59999999999999998D))
         {
-            if((p2X >= 900 && ball.ballX > 830 || p2X <= 580 && ball.ballX < 530) && Math.abs(ball.ballX - p2X) < 100)
+            if((p2X >= 900 && ballX > 830 || p2X <= 580 && ballX < 530) && Math.abs(ballX - p2X) < 100)
             {
                 move(2);
                 return;
             }
-            if(square(ball.ballX - p2X) * 2 + square(ball.ballY - p2Y) < square(185) && ball.ballX != p2X)
+            if(square(ballX - p2X) * 2 + square(ballY - p2Y) < square(185) && ballX != p2X)
             {
                 move(2);
                 return;
             }
-            if(ball.ballVX * ball.ballVX + ball.ballVY * ball.ballVY < 20 && ball.ballX - p2X < 30 && ball.ballX != p2X)
+            if(ballVX * ballVX + ballVY * ballVY < 20 && ballX - p2X < 30 && ballX != p2X)
             {
                 move(2);
                 return;
             }
-            if(Math.abs(ball.ballX - p2X) < (p2Fire ? 135 : '\226') && (ball.ballY > 50 && ball.ballY < 250))
+            if(Math.abs(ballX - p2X) < (p2Fire ? 135 : '\226') && (ballY > 50 && ballY < 250))
                 move(2);
         }
     }
@@ -94,8 +80,8 @@ public class DannoAI2 extends SlimeAI
     private int framesTillY(int i)
     {
         int j = 0;
-        int k = ball.ballY;
-        int l = ball.ballVY;
+        int k = ballY;
+        int l = ballVY;
         while((k += --l) > 0)
             j++;
         return j;
@@ -103,21 +89,21 @@ public class DannoAI2 extends SlimeAI
 
     private int xAtY(int i)
     {
-        int j = ball.ballX;
-        int k = ball.ballY;
-        int l = ball.ballVY;
+        int j = ballX;
+        int k = ballY;
+        int l = ballVY;
         while((k += --l) > i)
         {
-            j += ball.ballVX;
+            j += ballVX;
             if(j <= 0)
             {
                 j = 0;
-                ball.ballVX = -ball.ballVX;
+                ballVX = -ballVX;
             } else
             if(j >= 1000)
             {
                 j = 1000;
-                ball.ballVX = -ball.ballVX;
+                ballVX = -ballVX;
             }
         }
         return j;
@@ -125,8 +111,8 @@ public class DannoAI2 extends SlimeAI
 
     private int ballDist()
     {
-        int i = p2X - ball.ballX;
-        int j = p2Y - ball.ballY;
+        int i = p2X - ballX;
+        int j = p2Y - ballY;
         return (int)Math.sqrt(i * i + j * j);
     }
 
@@ -160,15 +146,15 @@ public class DannoAI2 extends SlimeAI
             case 0: // '\0'
             case 1: // '\001'
                 char c3 = serveType != 0 ? '\u0348' : '\u035C';
-                if(ball.ballVY > 12 && p2X < c3)
+                if(ballVY > 12 && p2X < c3)
                     move(1);
                 if(p2X >= c3)
                     move(3);
-                if(ball.ballVY == -3 && p2X != 800)
+                if(ballVY == -3 && p2X != 800)
                     move(2);
-                if(ball.ballVY < -12 && p2Y != 0 && p2X >= c3 - 15 && serveType == 0)
+                if(ballVY < -12 && p2Y != 0 && p2X >= c3 - 15 && serveType == 0)
                     move(0);
-                if(ball.ballX < 700)
+                if(ballX < 700)
                 {
                     serveType = -1;
                     return;
@@ -177,13 +163,13 @@ public class DannoAI2 extends SlimeAI
 
             case 2: // '\002'
                 char c = '\u0302';
-                if(ball.ballVY > 12 && p2X > c)
+                if(ballVY > 12 && p2X > c)
                     move(0);
                 if(p2X <= c)
                     move(3);
-                if(ball.ballVY == -2 && p2X != 800)
+                if(ballVY == -2 && p2X != 800)
                     move(2);
-                if(p2Y != 0 && ball.ballX > 800)
+                if(p2Y != 0 && ballX > 800)
                 {
                     serveType = 3 + fakeJump();
                     return;
@@ -196,9 +182,9 @@ public class DannoAI2 extends SlimeAI
                     move(0);
                 if(p2X <= c1)
                     move(3);
-                if(ball.ballX <= (p2Fire ? '\u02BC' : 730))
+                if(ballX <= (p2Fire ? '\u02BC' : 730))
                     move(2);
-                if(ball.ballX < 540)
+                if(ballX < 540)
                 {
                     serveType = -1;
                     return;
@@ -211,13 +197,13 @@ public class DannoAI2 extends SlimeAI
                     move(0);
                 if(p2X <= c2)
                     move(3);
-                if(ball.ballX <= (p2Fire ? '\u02BC' : 730))
+                if(ballX <= (p2Fire ? '\u02BC' : 730))
                     move(2);
-                if(ball.ballX < 600)
+                if(ballX < 600)
                     move(1);
-                if(ball.ballX < 580)
+                if(ballX < 580)
                     move(3);
-                if(ball.ballX < 540)
+                if(ballX < 540)
                 {
                     serveType = -1;
                     return;
@@ -237,34 +223,6 @@ public class DannoAI2 extends SlimeAI
         if(Math.random() < 0.34999999999999998D)
             i = 1 - i;
         return i;
-    }
-
-    protected final void move(int i)
-    {
-
-        switch(i)
-        {
-            case 0: // '\0'
-                //app.moveP2Left();
-                startMoveLeft();
-                return;
-
-            case 1: // '\001'
-                //app.moveP2Right();
-                startMoveRight();
-                return;
-
-            case 2: // '\002'
-//            app.moveP2Jump();
-                startJump();
-                return;
-
-            case 3: // '\003'
-//            app.moveP2Stop();
-                stopMoveLeft();
-                stopMoveRight();
-                return;
-        }
     }
 
 }

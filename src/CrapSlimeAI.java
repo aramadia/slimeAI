@@ -1,24 +1,12 @@
 
 public class CrapSlimeAI extends SlimeAI {
-	
-	Ball ball;
-	
-	int p2X, p2Y;
-	int p1X, p1Y;
-	boolean p2Fire;
 
     private final double JUMPINESS = 0.40000000000000002D;
     private int serveType = -1;
 	
 	@Override
 	public void moveSlime() {
-		ball = slimeGame.balls[0];
-		p2X = slimeGame.players[1].playerX;
-		p2Y = slimeGame.players[1].playerY;
-		p1X = slimeGame.players[0].playerX;
-		p1Y = slimeGame.players[0].playerY;
-		p2Fire = slimeGame.players[1].onScoringRun();
-		
+        setVars();
 		doMoveSlime();
 	}
 
@@ -30,8 +18,8 @@ public class CrapSlimeAI extends SlimeAI {
     private int howManyFrames(int i)
     {
         int j = 0;
-        int k = ball.ballY;
-        int l = ball.ballVY;
+        int k = ballY;
+        int l = ballVY;
         while((k += --l) > i) 
             j++;
         return j;
@@ -40,8 +28,8 @@ public class CrapSlimeAI extends SlimeAI {
     private int whereWillBallCross(int i)
     {
         int j = howManyFrames(i);
-        int k = ball.ballX;
-        int l = ball.ballVX;
+        int k = ballX;
+        int l = ballVX;
         for(int i1 = 0; i1 < j; i1++)
         {
             k += l;
@@ -62,7 +50,7 @@ public class CrapSlimeAI extends SlimeAI {
 
     private void doMoveSlime()
     {
-        if(ball.ballX < 500 && serveType != -1)
+        if(ballX < 500 && serveType != -1)
             serveType = -1;
         int i = whereWillBallCross(125);
         howManyFrames(125);
@@ -71,7 +59,7 @@ public class CrapSlimeAI extends SlimeAI {
             j = 0;
         else
             j = 23 + (int)(15D * Math.random());
-        if(ball.ballVX == 0 && ball.ballX == 800 || serveType != -1)
+        if(ballVX == 0 && ballX == 800 || serveType != -1)
         {
             if(serveType == -1)
             {
@@ -88,7 +76,7 @@ public class CrapSlimeAI extends SlimeAI {
                 break;
 
             case 0: // '\0'
-                if(ball.ballY < 300 && ball.ballVY < -3)
+                if(ballY < 300 && ballVY < -3)
                 {
                     move(1);
                     move(2);
@@ -97,7 +85,7 @@ public class CrapSlimeAI extends SlimeAI {
                 break;
 
             case 1: // '\001'
-                if(ball.ballY < 300 && ball.ballVY < 0)
+                if(ballY < 300 && ballVY < 0)
                 {
                     move(0);
                     move(2);
@@ -127,16 +115,16 @@ public class CrapSlimeAI extends SlimeAI {
         {
             if(this.p2Y != 0 || this.p2Fire && Math.random() < 0.29999999999999999D)
                 return;
-            if((this.p2X >= 900 && ball.ballX > 830 || this.p2X <= 580 && ball.ballX < 530) && Math.abs(ball.ballX - this.p2X) < 100)
+            if((this.p2X >= 900 && ballX > 830 || this.p2X <= 580 && ballX < 530) && Math.abs(ballX - this.p2X) < 100)
                 jump();
             else
-            if(square(ball.ballX - this.p2X) * 2 + square(ball.ballY - this.p2Y) < square(170) && ball.ballX != this.p2X)
+            if(square(ballX - this.p2X) * 2 + square(ballY - this.p2Y) < square(170) && ballX != this.p2X)
                 jump();
             else
-            if(ball.ballVX * ball.ballVX + ball.ballVY * ball.ballVY < 20 && ball.ballX - this.p2X < 30 && ball.ballX != this.p2X)
+            if(ballVX * ballVX + ballVY * ballVY < 20 && ballX - this.p2X < 30 && ballX != this.p2X)
                 jump();
             else
-            if(Math.abs(ball.ballX - this.p2X) < 150 && ball.ballY > 50 && ball.ballY < 400 && Math.random() < 0.5D)
+            if(Math.abs(ballX - this.p2X) < 150 && ballY > 50 && ballY < 400 && Math.random() < 0.5D)
                 jump();
         }
         if(this.p2Y == 0 && serveType == -1)
@@ -166,53 +154,25 @@ public class CrapSlimeAI extends SlimeAI {
                 move(1);
                 return;
             }
-            if(Math.abs(this.p2X - ball.ballX) < j)
+            if(Math.abs(this.p2X - ballX) < j)
             {
                 move(3);
                 return;
             }
-            if(ball.ballX < this.p2X)
+            if(ballX < this.p2X)
             {
                 move(0);
                 return;
             }
-            if(ball.ballX > this.p2X)
+            if(ballX > this.p2X)
                 move(1);
         }
     }
 
     private void jump()
     {
-        if(Math.random() < 0.40000000000000002D)
+        if(Math.random() < JUMPINESS)
             move(2);
     }
     
-    protected final void move(int i)
-    {
-        
-        switch(i)
-        {
-        case 0: // '\0'
-            //app.moveP2Left();
-        	startMoveLeft();
-            return;
-
-        case 1: // '\001'
-            //app.moveP2Right();
-        	startMoveRight();
-            return;
-
-        case 2: // '\002'
-//            app.moveP2Jump();
-        	startJump();
-            return;
-
-        case 3: // '\003'
-//            app.moveP2Stop();
-        	stopMoveLeft();
-        	stopMoveRight();
-            return;
-        }
-    }
-
 }
