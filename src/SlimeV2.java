@@ -5,11 +5,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Panel;
+import java.util.concurrent.*;
 
 import javax.swing.JFrame;
 
 
-public class SlimeV2 implements Runnable, Constants {
+public class SlimeV2 implements Callable<Integer>, Constants {
     SlimePanel panel = new SlimePanel();
     boolean shouldDraw;
     int nWidth;
@@ -182,7 +183,7 @@ public class SlimeV2 implements Runnable, Constants {
         return game_over;
     }
 
-    public void run() {
+    public Integer call() {
         boolean game_over = false;
         int i;
 
@@ -228,6 +229,15 @@ public class SlimeV2 implements Runnable, Constants {
         fInPlay = false;
         promptMsg = "Click the mouse to play...";
         panel.repaint();
+
+        System.out.println("sides[0].score = " + sides[0].score);
+        System.out.println("sides[1].score = " + sides[1].score);
+
+        if (sides[0].score > sides[1].score) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     private void processAIcommands() {
@@ -239,9 +249,7 @@ public class SlimeV2 implements Runnable, Constants {
     }
 
 
-    public void startGame() {
-        Thread game_thread;
-
+    public int startGame() {
         fEndGame = false;
         fInPlay = true;
         nPointsScored = 0;
@@ -256,13 +264,29 @@ public class SlimeV2 implements Runnable, Constants {
             ball.resetState();
         }
         panel.repaint();
-        game_thread = new Thread(this);
-        game_thread.start();
+
+        ExecutorService service = Executors.newFixedThreadPool(1);
+        Future<Integer> task = service.submit(this);
+
+        int winner = -1;
+        try {
+            winner = task.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ExecutionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        service.shutdownNow();
+
+        return winner;
     }
 
 
     public static void main(String args[]) {
-        int winner = determineVictor(false, new LoseAI(), new CrapSlimeAI());
+        SlimeAI ai1 = new LoseAI();
+        SlimeAI ai2 = new CrapSlimeAI();
+        int winner = determineVictor(false, ai1, ai2);
         System.out.println("winner = " + winner);
     }
 
@@ -281,11 +305,9 @@ public class SlimeV2 implements Runnable, Constants {
             game.panel.setFont();
             f.show();
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        } else {
-            game.startGame();
         }
 
-        return 0; // TODO return the winner
+        return game.startGame();
     }
 
     /**
@@ -321,7 +343,6 @@ public class SlimeV2 implements Runnable, Constants {
                     switch (event.key) {
                         case 'A':
                         case 'a':
-                            System.out.println("move left!");
                             players[0].startMoveLeft();
                             break;
 
