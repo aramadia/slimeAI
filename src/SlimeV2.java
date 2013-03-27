@@ -22,6 +22,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
     boolean fEndGame;
     long startTime;
     long gameTime;
+    long frames = 0;
     Side sides[];
     Player players[];
     Ball balls[];
@@ -164,6 +165,8 @@ public class SlimeV2 implements Callable<Integer>, Constants {
                 Thread.sleep(2500L);
             } catch (InterruptedException _ex) {
             }
+        } else {
+//            gameTime += 2500L;
         }
         promptMsg = "";
         panel.drawPrompt();
@@ -184,11 +187,13 @@ public class SlimeV2 implements Callable<Integer>, Constants {
     }
 
     public Integer call() {
+        startGame();
         boolean game_over = false;
         int i;
 
         startTime = System.currentTimeMillis();
         while (!game_over) {
+            frames++;
             gameTime = System.currentTimeMillis() - startTime;
 
             processAIcommands();
@@ -232,6 +237,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
 
         System.out.println("sides[0].score = " + sides[0].score);
         System.out.println("sides[1].score = " + sides[1].score);
+        System.out.println("Num frames = " + frames);
 
         if (sides[0].score > sides[1].score) {
             return 0;
@@ -249,7 +255,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
     }
 
 
-    public int startGame() {
+    public void startGame() {
         fEndGame = false;
         fInPlay = true;
         nPointsScored = 0;
@@ -264,22 +270,6 @@ public class SlimeV2 implements Callable<Integer>, Constants {
             ball.resetState();
         }
         panel.repaint();
-
-        ExecutorService service = Executors.newFixedThreadPool(1);
-        Future<Integer> task = service.submit(this);
-
-        int winner = -1;
-        try {
-            winner = task.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (ExecutionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        service.shutdownNow();
-
-        return winner;
     }
 
 
@@ -317,7 +307,21 @@ public class SlimeV2 implements Callable<Integer>, Constants {
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
-        return game.startGame();
+        ExecutorService service = Executors.newFixedThreadPool(1);
+        Future<Integer> task = service.submit(game);
+
+        int winner = -1;
+        try {
+            winner = task.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ExecutionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        service.shutdownNow();
+
+        return winner;
     }
 
     /**
