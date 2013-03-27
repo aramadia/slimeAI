@@ -74,23 +74,28 @@ abstract class SlimeAI
 
     public abstract void moveSlime();
 
-    protected final void startMoveLeft() {
-        player.startMoveLeft();
+    protected final void startMoveTowardsNet() {
+        if (player == slimeGame.players[0]) {
+            player.startMoveRight();
+        } else {
+            player.startMoveLeft();
+        }
     }
 
-    protected final void startMoveRight() {
-        player.startMoveRight();
+    protected final void startMoveAwayFromNet() {
+        if (player == slimeGame.players[0]) {
+            player.startMoveLeft();
+        } else {
+            player.startMoveRight();
+        }
     }
 
     protected final void startJump() {
         player.startJump();
     }
 
-    protected final void stopMoveLeft() {
+    protected final void stopMoving() {
         player.stopMoveLeft();
-    }
-
-    protected final void stopMoveRight() {
         player.stopMoveRight();
     }
 
@@ -101,20 +106,12 @@ abstract class SlimeAI
         {
             case 0: // '\0'
                 //app.moveP2Left();
-                if (player == slimeGame.players[0]) {
-                    startMoveRight();
-                } else {
-                    startMoveLeft();
-                }
+                startMoveTowardsNet();
                 return;
 
             case 1: // '\001'
                 //app.moveP2Right();
-                if (player == slimeGame.players[0]) {
-                    startMoveLeft();
-                } else {
-                    startMoveRight();
-                }
+                startMoveAwayFromNet();
                 return;
 
             case 2: // '\002'
@@ -124,8 +121,7 @@ abstract class SlimeAI
 
             case 3: // '\003'
 //            app.moveP2Stop();
-                stopMoveLeft();
-                stopMoveRight();
+                stopMoving();
                 return;
         }
     }

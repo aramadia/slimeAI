@@ -8,6 +8,6 @@
 public class LoseAI extends SlimeAI {
     @Override
     public void moveSlime() {
-        startMoveLeft();
+        startMoveTowardsNet();
     }
 }
