@@ -1,5 +1,5 @@
 public interface Constants {
-    public static final int SCORING_RUN_FOR_SUPER = 3;
+    public static final int SCORING_RUN_FOR_SUPER = Integer.MAX_VALUE;
 
     public static final int FAST_SPEED = 16;
     public static final int SLOW_SPEED = 8;

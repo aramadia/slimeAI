@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Panel;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.*;
 
 import javax.swing.JFrame;
@@ -279,7 +281,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        int winner = determineVictor(true, dannoAI, crapSlimeAI);
+        int winner = determineVictor(true, human, human);
         System.out.println("winner = player " + winner);
     }
 
@@ -307,7 +309,8 @@ public class SlimeV2 implements Callable<Integer>, Constants {
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
-        ExecutorService service = Executors.newFixedThreadPool(1);
+        int NTHREADS = 1;
+        ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
         Future<Integer> task = service.submit(game);
 
         int winner = -1;
