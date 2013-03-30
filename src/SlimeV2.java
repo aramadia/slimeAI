@@ -5,14 +5,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Panel;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.*;
 
 import javax.swing.JFrame;
 
 
 public class SlimeV2 implements Callable<Integer>, Constants {
+    public static final int STARTING_POINTS = 1;
+
     SlimePanel panel = new SlimePanel();
     boolean shouldDraw;
     int nWidth;
@@ -36,10 +36,10 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         sides = new Side[2];
         sides[0] = new Side(this, true,
                 50, 445,
-                Color.red, "Big Red Slime");
+                Color.red, "Big Red Slime", STARTING_POINTS);
         sides[1] = new Side(this, false,
                 555, 950,
-                Color.green, "Magic Green Slime");
+                Color.green, "Magic Green Slime", STARTING_POINTS);
 
         players = new Player[2];
         players[0] = new Player(sides[0], 200);
