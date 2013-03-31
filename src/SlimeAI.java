@@ -69,6 +69,7 @@ abstract class SlimeAI
             p1Fire = player1.onScoringRun(); //dont think this works, fix it
             p2Fire = player2.onScoringRun(); //dont think this works, fix it
         }
+        
 
     }
 
@@ -101,7 +102,10 @@ abstract class SlimeAI
 
     protected final void move(int i)
     {
-
+    	System.out.print(
+            	String.format("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d\n",
+            		ballX, ballY, ballVX, ballVY, p1X, p1Y, p1XV, p1YV, p2X, p2Y, p2XV, p2YV, i)
+        );
         switch(i)
         {
             case 0: // '\0'
