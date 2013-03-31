@@ -13,6 +13,11 @@ import javax.swing.JFrame;
 public class SlimeV2 implements Callable<Integer>, Constants {
     public static final int STARTING_POINTS = 1;
 
+    enum ServeSide {
+        LEFT,
+        RIGHT
+    }
+
     SlimePanel panel = new SlimePanel();
     boolean shouldDraw;
     int nWidth;
@@ -31,7 +36,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
     SlimeAI ai[];
 
 
-    public SlimeV2(boolean draw, SlimeAI ai1, SlimeAI ai2) {
+    public SlimeV2(boolean draw, ServeSide side, SlimeAI ai1, SlimeAI ai2) {
         shouldDraw = draw;
         sides = new Side[2];
         sides[0] = new Side(this, true,
@@ -56,7 +61,14 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         ai[1] = ai2;
 
         balls = new Ball[1];
-        balls[0] = new Ball(this, 200, 400);
+
+        if (side == ServeSide.LEFT) {
+            // LEFT
+            balls[0] = new Ball(this, 200, 400);
+        } else {
+            // RIGHT
+            balls[0] = new Ball(this, 800, 400);
+        }
     }
 
     public int getGroundPos(int height) {
@@ -281,19 +293,21 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        int winner = determineVictor(true, human, human);
+        int winner = determineVictor(true, ServeSide.RIGHT, human, human);
         System.out.println("winner = player " + winner);
     }
 
     /**
      *
+     *
      * @param draw should draw the UI
+     * @param serveSide
      * @param ai1 AI for player 1 (null for human player)
      * @param ai2 AI for player 2 (null for human player)
      * @return 0 if player1 wins, 1 if player2 wins
      */
-    private static int determineVictor(boolean draw, SlimeAI ai1, SlimeAI ai2) {
-        SlimeV2 game = new SlimeV2(draw, ai1, ai2);
+    private static int determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
+        SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2);
 
         if (draw) {
             JFrame f = new JFrame();
