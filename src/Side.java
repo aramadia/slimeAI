@@ -13,19 +13,22 @@ public class Side {
 
     int score;
     int scoringRun;
+    int initialScore;
 
     public Side(SlimeV2 game,
                 boolean onLeft,
                 int minX,
                 int maxX,
                 Color playersColour,
-                String description) {
+                String description,
+                int initialScore) {
         this.game = game;
         this.onLeft = onLeft;
         this.minX = minX;
         this.maxX = maxX;
         this.playersColour = playersColour;
         this.description = description;
+        this.initialScore = initialScore;
         resetState();
     }
 
@@ -34,7 +37,7 @@ public class Side {
     }
 
     public void resetState() {
-        this.score = 5;
+        this.score = initialScore;
         this.scoringRun = 0;
         this.touched = false;
     }
