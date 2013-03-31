@@ -3,7 +3,7 @@ package neuralnetwork.trainer;
 
 import java.util.Random;
 
-import core.NeuralNetwork;
+import neuralnetwork.core.NeuralNetwork;
 
 
 
