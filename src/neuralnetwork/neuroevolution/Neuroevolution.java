@@ -15,7 +15,7 @@ public class Neuroevolution implements Runnable{
 
 	private static final double mutationRate = .025;
 	private static final boolean verbose = true;
-	final int numAgents = 60; //30
+	final int numAgents = 30; //30
 	final int numIterations = 100;
 	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
@@ -103,7 +103,7 @@ public class Neuroevolution implements Runnable{
 			
 			//Finished
 			finishedIteration = true;
-
+			
         }
         System.out.println("evolve finished");
         bestAgent.save();

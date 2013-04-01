@@ -337,21 +337,28 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
             f.show();
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
-
-        int NTHREADS = 1;
-        ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
-        Future<GameResult> task = service.submit(game);
-
+        boolean doThreading = false;
         GameResult result = null;
-        try {
-            result = task.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (ExecutionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        if (doThreading)
+        {
+	        int NTHREADS = 1;
+	        ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
+	        Future<GameResult> task = service.submit(game);
+	
+	       
+	        try {
+	            result = task.get();
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+	        } catch (ExecutionException e) {
+	            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+	        }
 
-        service.shutdownNow();
+	        service.shutdownNow();
+        } else {
+        	
+        	result = game.call();
+        }
 
         return result;
     }

@@ -56,6 +56,9 @@ public class Graphing extends Engine{
 	@Override
 	public void update(Graphics2D g) {
 		
+		if (f == null) {
+			return;
+		}
 		width = f.getWidth();
 		height = f.getHeight();
 		
