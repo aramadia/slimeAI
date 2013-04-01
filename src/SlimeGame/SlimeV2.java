@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
-    public static final int STARTING_POINTS = 1;
+    public static final int STARTING_POINTS = 5;
     private static final long MAX_FRAMES = 50000;
 
     public enum ServeSide {
@@ -307,7 +307,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        GameResult result = determineVictor(false, ServeSide.RIGHT, dannoAI, dannoAI2);
+        GameResult result = determineVictor(true, ServeSide.RIGHT, dannoAI, dannoAI2);
         System.out.println("winner = player " + result.getWinner());
 
     }

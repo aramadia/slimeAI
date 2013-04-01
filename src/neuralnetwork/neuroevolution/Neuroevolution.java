@@ -22,15 +22,16 @@ public class Neuroevolution implements Runnable{
 	private static final double mutationRate = .025;
 	private static final boolean verbose = true;
 	final int numAgents = 60; //30
-	final int numIterations = 100;
+	final int numIterations = 2000;
 	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
 	static DiscreteDataSet avgFitnessDS = new DiscreteDataSet();
 	
 	public boolean finishedIteration;
-	public double best;
 	public int maxExecuteIteration;
-    private Agent bestAgent;
+	
+    private Agent allBestAgent;
+	private double allBestFitness;
 
     public void evolve() throws InterruptedException, ExecutionException {
 		
@@ -39,7 +40,9 @@ public class Neuroevolution implements Runnable{
 		Agent[] agents = new Agent[numAgents];
 		double[] fitness = new double[numAgents];
 		RouletteWheel wheel = new RouletteWheel();
-        bestAgent = null;
+		
+		allBestAgent = null;
+		allBestFitness = 0.0;
 
 		// Make a population of random agents
 		for (int i = 0; i < numAgents; i++) {
@@ -54,7 +57,6 @@ public class Neuroevolution implements Runnable{
 
 		for (int iteration = 0; iteration < numIterations; iteration++) {
 			
-            best = 0;
             finishedIteration = false;
 
 			// Evaluate fitness
@@ -77,8 +79,9 @@ public class Neuroevolution implements Runnable{
 				
 				fitness[i] = futureFitness.get(i).get();
 								
-				if (fitness[i] > bestFitness) {
-					bestAgent = agents[i];
+				if (fitness[i] > allBestFitness) {
+					allBestAgent = agents[i];
+					allBestFitness = fitness[i];
 				}
 				bestFitness = Math.max(bestFitness, fitness[i]);
 				realTotalFitness += fitness[i];
@@ -88,8 +91,11 @@ public class Neuroevolution implements Runnable{
 			}
 			wheel.process();
 			
-			if (verbose && iteration % 25 == 24) {
+			if (iteration % 25 == 24) {
 				// print best iteration
+
+		        System.out.println("Saving agent of " + allBestFitness);
+		        allBestAgent.save();
 			}
 
 			double avgFitness = realTotalFitness / numAgents;
@@ -99,7 +105,7 @@ public class Neuroevolution implements Runnable{
 				System.out.println("Gen : " + iteration + "\t"
 						+ f.format(avgFitness) + "\t" + f.format(bestFitness));
 			}
-			best = bestFitness;
+			
 			bestFitnessDS.addPoint(bestFitness);
 			avgFitnessDS.addPoint(avgFitness);
 
@@ -126,7 +132,7 @@ public class Neuroevolution implements Runnable{
 			
         }
         System.out.println("evolve finished");
-        bestAgent.save();
+        allBestAgent.save();
 
     }
 
