@@ -36,7 +36,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         int wins = 0;
         for (int i = 0; i < NUM_GAMES; i++) {
             SlimeAI ai = new CrapSlimeAI();
-            GameResult result = SlimeV2.determineVictor(false, SlimeV2.ServeSide.LEFT, ai, this);
+            GameResult result = SlimeV2.determineVictor(false, SlimeV2.ServeSide.RIGHT, ai, this);
             if (result.getWinner() == 1) {
                 wins++;
             }
@@ -64,7 +64,6 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
     @Override
     public void save() {
-        // just printing for now
         double[] weights = nn.retrieveWeights();
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SaveFile));
@@ -140,6 +139,6 @@ public class SlimeAgent extends SlimeAI implements Agent {
     public static void main(String[] args) {
         SlimeAgent ai2 = new SlimeAgent();
         ai2.load();
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.LEFT, new CrapSlimeAI(), ai2);
+        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, new CrapSlimeAI(), ai2);
     }
 }

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
     public static final int STARTING_POINTS = 1;
+    private static final long MAX_FRAMES = 50000;
 
     public enum ServeSide {
         LEFT,
@@ -243,6 +244,10 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
                 } catch (InterruptedException _ex) {
                 }
             }
+
+            if (frames == MAX_FRAMES) {
+                game_over = true;
+            }
         }
 
 //        System.out.println("GAME OVER!!!!");
@@ -258,8 +263,11 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
         if (sides[0].score > sides[1].score) {
             gameResult.setWinner(0);
-        } else {
+        } else if (sides[0].score < sides[1].score) {
             gameResult.setWinner(1);
+        } else {
+            // tie
+            gameResult.setWinner(2);
         }
         gameResult.setNumFrames(frames);
 
