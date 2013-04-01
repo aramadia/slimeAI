@@ -1,5 +1,6 @@
 package neuralnetwork.neuroevolution;
 
+import SlimeGame.Constants;
 import SlimeGame.CrapSlimeAI;
 import SlimeGame.SlimeAI;
 import SlimeGame.SlimeV2;
@@ -74,11 +75,36 @@ public class SlimeAgent extends SlimeAI implements Agent {
         }
         System.out.print("}");
     }
+    
+    double normalizeVelocity(double velocity)
+    {
+    	// what is the maximum velocity anyways?
+    	final double maxVelocity = 100;
+    	
+    	// normalize (-maxVelocity,maxVelocity) to (-1,1)
+    	return (velocity ) / maxVelocity;
+    }
 
 
     @Override
     public void moveSlime() {
-        double[] inputs = new double[]{ballX, ballY, ballVX, ballVY, p1X, p1Y, p1XV, p1YV, p2X, p2Y, p2XV, p2YV};
+    	double gameWidth = Constants.GAME_WIDTH;
+    	double gameHeight = Constants.GAME_HEIGHT;
+    	
+    	// normalize these inputs
+        double[] inputs = new double[]{
+        		ballX / gameWidth, 
+        		ballY / gameHeight, 
+        		normalizeVelocity(ballVX), 
+        		normalizeVelocity(ballVY), 
+        		p1X / gameWidth, 
+        		p1Y / gameHeight, 
+        		normalizeVelocity(p1XV), 
+        		normalizeVelocity(p1YV), 
+        		p2X / gameWidth, 
+        		p2Y / gameHeight, 
+        		normalizeVelocity(p2XV),
+        		normalizeVelocity(p2YV)};
         double[] outputs = nn.process(inputs);
 
         if (outputs[0] < 0.4) {

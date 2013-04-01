@@ -11,5 +11,10 @@ public interface Constants {
 
     public static final int HIGH_GRAVITY = 4;
     public static final int LOW_GRAVITY = 2;
+    
+    // deduced constants
+    public static final int GAME_WIDTH = 1000;
+    public static final int GAME_HEIGHT = 750;
+    
 }
 
