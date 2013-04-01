@@ -2,7 +2,7 @@ package neuralnetwork.neuroevolution;
 
 public interface Agent {
 
-	public double evaluteFitness();
+	public double evaluateFitness();
 	/**
 	 * Creates a similar agent that has been modified in some random fashion
 	 * @return

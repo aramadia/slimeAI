@@ -1,3 +1,4 @@
+package SlimeGame;
 
 public class CrapSlimeAI extends SlimeAI {
 

@@ -1,3 +1,5 @@
+package SlimeGame;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jlauer

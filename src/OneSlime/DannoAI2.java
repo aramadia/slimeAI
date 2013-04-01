@@ -3,7 +3,7 @@ package OneSlime;
 // Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
-// Source File Name:   DannoAI2.java
+// Source File Name:   SlimeGame.DannoAI2.java
 
 
 public class DannoAI2 extends SlimeAI

@@ -1,3 +1,5 @@
+package SlimeGame;
+
 public interface Constants {
     public static final int SCORING_RUN_FOR_SUPER = Integer.MAX_VALUE;
 

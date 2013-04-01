@@ -1,3 +1,5 @@
+package SlimeGame;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jlauer
@@ -5,7 +7,7 @@
  * Time: 7:09 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract class SlimeAI
+public abstract class SlimeAI
 {
 
     protected SlimeV2 slimeGame;

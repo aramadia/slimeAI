@@ -1,3 +1,5 @@
+package SlimeGame;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -13,7 +15,7 @@ import javax.swing.JFrame;
 public class SlimeV2 implements Callable<Integer>, Constants {
     public static final int STARTING_POINTS = 1;
 
-    enum ServeSide {
+    public enum ServeSide {
         LEFT,
         RIGHT
     }
@@ -306,7 +308,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
      * @param ai2 AI for player 2 (null for human player)
      * @return 0 if player1 wins, 1 if player2 wins
      */
-    private static int determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
+    public static int determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
         SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2);
 
         if (draw) {
