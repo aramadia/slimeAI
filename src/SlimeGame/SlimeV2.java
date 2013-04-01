@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
-    public static final int STARTING_POINTS = 1;
+    public static final int STARTING_POINTS = 3;
     private static final long MAX_FRAMES = 50000;
     private static final int MAX_CONSECUTIVE_HITS = 8;
 
@@ -324,7 +324,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-        GameResult result = determineVictor(true, ServeSide.LEFT, human, threeSwapSlimeAI);
+        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI);
         System.out.println("winner = player " + result.getWinner());
         System.out.println("ltr num crosses = " + result.getLtrNetCrosses());
         System.out.println("rtl num crosses = " + result.getRtlNetCrosses());

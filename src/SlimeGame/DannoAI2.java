@@ -79,16 +79,6 @@ public class DannoAI2 extends SlimeAI
         return i * i;
     }
 
-    private int framesTillY(int i)
-    {
-        int j = 0;
-        int k = ballY;
-        int l = ballVY;
-        while((k += --l) > 0)
-            j++;
-        return j;
-    }
-
     private int xAtY(int i)
     {
         int j = ballX;

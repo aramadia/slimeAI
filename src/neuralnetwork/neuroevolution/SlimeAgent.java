@@ -15,7 +15,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
 	/** Outputs passed back to the input at each day */
 	public static final int NUM_MEMORY_NODES = 0;
 
-    public static final int NUM_INPUT_NODES = 9;
+    public static final int NUM_INPUT_NODES = 10;
     public static final int NUM_OUTPUT_NODES = 2;
     
     public static final int DEFAULT_NUM_GAMES = 30;
@@ -137,12 +137,14 @@ public class SlimeAgent extends SlimeAI implements Agent {
     	double gameWidth = Constants.GAME_WIDTH;
     	double gameHeight = Constants.GAME_HEIGHT;
     	
+    	double whereWillBallCross = whereWillBallCross(125);
     	// normalize these inputs
         double[] inputs = new double[]{
         		ballX / gameWidth, 
         		ballY / gameHeight, 
         		normalizeVelocity(ballVX), 
-        		normalizeVelocity(ballVY), 
+        		normalizeVelocity(ballVY),
+        		(whereWillBallCross - p2X) / 50.0,
         		(ballX - p2X) / 50.0,
         		(ballY - p2Y) / 50.0,
 //        		p1X / gameWidth, 

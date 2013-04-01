@@ -25,6 +25,41 @@ public abstract class SlimeAI
         this.slimeGame = slimeGame;
         this.player = player;
     }
+    
+    protected int howManyFrames(int yPos)
+    {
+        int time = 0;
+        int curY = ballY;
+        int curVY = ballVY;
+        
+        // gravity
+        while((curY += --curVY) > yPos) 
+            time++;
+        return time;
+    }
+
+    protected int whereWillBallCross(int yPos)
+    {
+        int time = howManyFrames(yPos);
+        int curX = ballX;
+        int curVX = ballVX;
+        for(int t = 0; t < time; t++)
+        {
+            curX += curVX;
+            if(curX < 0)
+            {
+                curX = 0;
+                curVX = -curVX;
+            } else
+            if(curX > 1000)
+            {
+                curX = 1000;
+                curVX = -curVX;
+            }
+        }
+
+        return curX;
+    }
 
     public void setVars() {
         Ball ball = slimeGame.balls[0];

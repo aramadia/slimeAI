@@ -21,33 +21,7 @@ public class DannoAI extends SlimeAI {
     private int square(int i) {
         return i * i;
     }
-
-    private int howManyFrames(int i) {
-        int j = 0;
-        int k = ballY;
-        int l = ballVY;
-        while ((k += --l) > i)
-            j++;
-        return j;
-    }
-
-    private int whereWillBallCross(int i) {
-        int j = howManyFrames(i);
-        int k = ballX;
-        int l = ballVX;
-        for (int i1 = 0; i1 < j; i1++) {
-            k += l;
-            if (k < 0) {
-                k = 0;
-                l = -l;
-            } else if (k > 1000) {
-                k = 1000;
-                l = -l;
-            }
-        }
-
-        return k;
-    }
+    
 
     public void doMoveSlime() {
         if (ballX < 500 && serveType != -1)
