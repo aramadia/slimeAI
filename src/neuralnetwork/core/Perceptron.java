@@ -91,4 +91,9 @@ public class Perceptron implements Node{
 		return s;
 		
 	}
+
+	@Override
+	public int numWeights() {
+		return weight.length;
+	}
 }
