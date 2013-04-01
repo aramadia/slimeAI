@@ -1,11 +1,11 @@
 package neuralnetwork.neuroevolution;
 
-public abstract class Agent {
+public interface Agent {
 
-	public abstract double evaluteFitness();
+	public double evaluteFitness();
 	/**
 	 * Creates a similar agent that has been modified in some random fashion
 	 * @return
 	 */
-	public abstract Agent mutate(double mutationRate);
+	public Agent mutate(double mutationRate);
 }

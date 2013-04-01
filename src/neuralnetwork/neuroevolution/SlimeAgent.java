@@ -3,9 +3,10 @@ package neuralnetwork.neuroevolution;
 import java.util.Random;
 
 
-public class SlimeAgent extends Agent{
+public class SlimeAgent implements Agent{
 	
 	public neuralnetwork.core.NeuralNetwork nn;
+	//NeuralNetworkSlimeAi ai;
 	
 	public static final int NUM_HIDDEN_NODES = 25;
 	/** Outputs passed back to the input at each day */
@@ -24,6 +25,11 @@ public class SlimeAgent extends Agent{
 //		
 //		// play 10 games
 //		
+		
+		
+		
+		// always recieve
+		
 //		while (gameisNotOver)
 //		{
 //			input[] = {slimePos.x, pos.y, slime2.};
