@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
-    public static final int STARTING_POINTS = 1;
     private static final long MAX_FRAMES = 50000;
     private static final int MAX_CONSECUTIVE_HITS = 8;
 
@@ -41,15 +40,15 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
     SlimeAI ai[];
 
 
-    public SlimeV2(boolean draw, ServeSide side, SlimeAI ai1, SlimeAI ai2) {
+    public SlimeV2(boolean draw, ServeSide side, SlimeAI ai1, SlimeAI ai2, int numStartingPoints) {
         shouldDraw = draw;
         sides = new Side[2];
         sides[0] = new Side(this, true,
                 50, 445,
-                Color.red, "Big Red Slime", STARTING_POINTS);
+                Color.red, "Big Red Slime", numStartingPoints);
         sides[1] = new Side(this, false,
                 555, 950,
-                Color.green, "Magic Green Slime", STARTING_POINTS);
+                Color.green, "Magic Green Slime", numStartingPoints);
 
         players = new Player[2];
         players[0] = new Player(sides[0], 200);
@@ -324,7 +323,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI);
+        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI, 5);
         System.out.println("winner = player " + result.getWinner());
         System.out.println("ltr num crosses = " + result.getLtrNetCrosses());
         System.out.println("rtl num crosses = " + result.getRtlNetCrosses());
@@ -339,8 +338,8 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
      * @param ai2 AI for player 2 (null for human player)
      * @return 0 if player1 wins, 1 if player2 wins
      */
-    public static GameResult determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
-        SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2);
+    public static GameResult determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2, int numStartingPoints) {
+        SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2, numStartingPoints);
 
         if (draw) {
             JFrame f = new JFrame();
