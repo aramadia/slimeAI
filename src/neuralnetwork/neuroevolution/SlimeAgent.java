@@ -141,4 +141,9 @@ public class SlimeAgent extends SlimeAI implements Agent {
         ai2.load();
         SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, new CrapSlimeAI(), ai2);
     }
+
+	@Override
+	public Double call() throws Exception {
+		return evaluateFitness();
+	}
 }

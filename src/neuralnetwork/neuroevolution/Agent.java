@@ -1,6 +1,9 @@
 package neuralnetwork.neuroevolution;
 
-public interface Agent {
+import java.util.concurrent.Callable;
+
+
+public interface Agent extends Callable<Double>{
 
 	public double evaluateFitness();
 	/**

@@ -6,8 +6,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.swing.JFrame;
+
+import SlimeGame.GameResult;
 
 import lattice.Engine;
 
@@ -26,7 +32,7 @@ public class Neuroevolution implements Runnable{
 	public int maxExecuteIteration;
     private Agent bestAgent;
 
-    public void evolve() {
+    public void evolve() throws InterruptedException, ExecutionException {
 		
 		Random r = new Random();
 
@@ -41,6 +47,9 @@ public class Neuroevolution implements Runnable{
 
 		}
 		
+		final int NTHREADS = 4;
+        ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
+        ArrayList<Future<Double>> futureFitness = new ArrayList<Future<Double>>();
 		
 
 		for (int iteration = 0; iteration < numIterations; iteration++) {
@@ -54,9 +63,20 @@ public class Neuroevolution implements Runnable{
 			double bestFitness = 0;
 			
 			wheel.clear();
+			futureFitness.clear();
+			
+			// evaluate all the fitnesses
 			
 			for (int i = 0; i < agents.length; i++) {
-				fitness[i] = agents[i].evaluateFitness();
+				Future<Double> f = service.submit(agents[i]);
+				futureFitness.add(f);
+			}
+			
+			for (int i = 0; i < agents.length; i++) {
+				//fitness[i] = agents[i].evaluateFitness();
+				
+				fitness[i] = futureFitness.get(i).get();
+								
 				if (fitness[i] > bestFitness) {
 					bestAgent = agents[i];
 				}
@@ -112,7 +132,15 @@ public class Neuroevolution implements Runnable{
 
 	@Override
 	public void run() {
-		evolve();
+		try {
+			evolve();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 	public static void main(String[] args) {
@@ -128,7 +156,15 @@ public class Neuroevolution implements Runnable{
 		graphing.f = frame;
 		
 		
-		e.evolve();
+		try {
+			e.evolve();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 }
