@@ -65,7 +65,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         			
             GameResult result = SlimeV2.determineVictor(false, side, ai, this);
             if (result.getWinner() == 1) {
-                points += 50;
+                points += 10;
             } else {
                 points += result.getRtlNetCrosses();
             }
@@ -179,7 +179,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI human = null;
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, crapAI, ai2);
+        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, human, ai2);
     }
 
 	@Override
