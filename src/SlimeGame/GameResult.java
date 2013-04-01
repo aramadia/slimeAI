@@ -12,7 +12,7 @@ public class GameResult {
     private int winner;
     private int numTouches;
     private long numFrames;      // NOT YET IMPLEMENTED
-    private int numNetCrosses;   // NOT YET IMPLEMENTED
+    private int numNetCrosses;
 
     public int getWinner() {
         return winner;
@@ -42,7 +42,7 @@ public class GameResult {
         return numNetCrosses;
     }
 
-    public void incrementNumNetCrosses() {
-        numNetCrosses++;
+    public void setNumNetCrosses(int numNetCrosses) {
+        this.numNetCrosses = numNetCrosses;
     }
 }

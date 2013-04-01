@@ -16,6 +16,8 @@ public class Ball {
     boolean isLost;
 
     SlimeV2 game;
+    int leftToRightCrosses;
+    int rightToLeftCrosses;
 
     public Ball(SlimeV2 game, int initialX, int initialY) {
         this.initialX = initialX;
@@ -38,6 +40,12 @@ public class Ball {
 
         ballY += --ballVY;
         ballX += ballVX;
+
+        if (ballOldX <= 500 && ballX > 500) {
+            leftToRightCrosses++;
+        } else if (ballOldX >= 500 && ballX < 500) {
+            rightToLeftCrosses++;
+        }
         if (!game.fEndGame) {
             int i;
             for (i = 0; i < game.players.length; i++) {

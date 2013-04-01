@@ -39,7 +39,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
 
-        int wins = 0;
+        int points = 0;
         for (int i = 0; i < NUM_GAMES; i++) {
         	SlimeAI ai = null;
         	SlimeV2.ServeSide side = null;
@@ -60,11 +60,13 @@ public class SlimeAgent extends SlimeAI implements Agent {
         			
             GameResult result = SlimeV2.determineVictor(false, side, ai, this);
             if (result.getWinner() == 1) {
-                wins++;
+                points += 100;
+            } else {
+                points += result.getNumNetCrosses();
             }
         }
 
-        return wins;
+        return points;
 	}
 
 	@Override
@@ -159,6 +161,8 @@ public class SlimeAgent extends SlimeAI implements Agent {
     }
 
     public static void main(String[] args) {
+        SlimeAgent slimeAgent = new SlimeAgent();
+        slimeAgent.load();
         SlimeAgent ai2 = new SlimeAgent();
         ai2.load();
         
@@ -166,7 +170,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI human = null;
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.LEFT, dannoAI2, ai2);
+        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.LEFT, slimeAgent, ai2);
     }
 
 	@Override
