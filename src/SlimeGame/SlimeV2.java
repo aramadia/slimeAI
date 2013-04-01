@@ -174,7 +174,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
             }
 
         /* Update the prompt */
-        System.out.println(promptMsg);
+//        System.out.println(promptMsg);
         panel.drawPrompt();
         if (shouldDraw) {
             try {
@@ -244,16 +244,16 @@ public class SlimeV2 implements Callable<Integer>, Constants {
             }
         }
 
-        System.out.println("GAME OVER!!!!");
+//        System.out.println("GAME OVER!!!!");
 
         fEndGame = true;
         fInPlay = false;
         promptMsg = "Click the mouse to play...";
         panel.repaint();
 
-        System.out.println("sides[0].score = " + sides[0].score);
-        System.out.println("sides[1].score = " + sides[1].score);
-        System.out.println("Num frames = " + frames);
+//        System.out.println("sides[0].score = " + sides[0].score);
+//        System.out.println("sides[1].score = " + sides[1].score);
+//        System.out.println("Num frames = " + frames);
 
         if (sides[0].score > sides[1].score) {
             return 0;
@@ -297,6 +297,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         SlimeAI dannoAI2 = new DannoAI2();
         int winner = determineVictor(true, ServeSide.RIGHT, dannoAI, dannoAI2);
         System.out.println("winner = player " + winner);
+
     }
 
     /**

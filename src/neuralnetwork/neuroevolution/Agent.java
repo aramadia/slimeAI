@@ -8,4 +8,6 @@ public interface Agent {
 	 * @return
 	 */
 	public Agent mutate(double mutationRate);
+
+    public void save();
 }

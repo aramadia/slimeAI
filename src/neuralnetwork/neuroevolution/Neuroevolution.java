@@ -16,7 +16,7 @@ public class Neuroevolution implements Runnable{
 	private static final double mutationRate = .025;
 	private static final boolean verbose = true;
 	final int numAgents = 60; //30
-	final int numIterations = 20000;
+	final int numIterations = 100;
 	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
 	static DiscreteDataSet avgFitnessDS = new DiscreteDataSet();
@@ -24,15 +24,16 @@ public class Neuroevolution implements Runnable{
 	public boolean finishedIteration;
 	public double best;
 	public int maxExecuteIteration;
-	
-	public void evolve() {
+    private Agent bestAgent;
+
+    public void evolve() {
 		
 		Random r = new Random();
 
 		Agent[] agents = new Agent[numAgents];
 		double[] fitness = new double[numAgents];
 		RouletteWheel wheel = new RouletteWheel();
-		Agent bestAgent = null;
+        bestAgent = null;
 
 		// Make a population of random agents
 		for (int i = 0; i < numAgents; i++) {
@@ -44,16 +45,8 @@ public class Neuroevolution implements Runnable{
 
 		for (int iteration = 0; iteration < numIterations; iteration++) {
 			
-			while (true) {
-				if (iteration >= maxExecuteIteration) {
-					Thread.yield();
-				}
-				else {
-					best = 0;
-					finishedIteration = false;
-					break;
-				}
-			}
+            best = 0;
+            finishedIteration = false;
 
 			// Evaluate fitness
 			double totalFitness = 0;
@@ -63,7 +56,7 @@ public class Neuroevolution implements Runnable{
 			wheel.clear();
 			
 			for (int i = 0; i < agents.length; i++) {
-				fitness[i] = agents[i].evaluteFitness();
+				fitness[i] = agents[i].evaluateFitness();
 				if (fitness[i] > bestFitness) {
 					bestAgent = agents[i];
 				}
@@ -111,20 +104,21 @@ public class Neuroevolution implements Runnable{
 			//Finished
 			finishedIteration = true;
 
-		}
+        }
+        System.out.println("evolve finished");
+        bestAgent.save();
 
-	}
+    }
 
 	@Override
 	public void run() {
 		evolve();
-		
-	}
+    }
 
 	public static void main(String[] args) {
 	
 		Neuroevolution e = new Neuroevolution();
-		e.maxExecuteIteration = 1500;
+		e.maxExecuteIteration = 10;
 		Graphing graphing = new Graphing();
 		graphing.addSet(bestFitnessDS);
 		graphing.addSet(avgFitnessDS);
@@ -135,9 +129,6 @@ public class Neuroevolution implements Runnable{
 		
 		
 		e.evolve();
-		
-		
-	
 	}
 
 }
