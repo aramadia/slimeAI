@@ -50,7 +50,7 @@ public class Neuroevolution implements Runnable{
 
 		}
 		
-		final int NTHREADS = 2;
+		final int NTHREADS = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
         ArrayList<Future<Double>> futureFitness = new ArrayList<Future<Double>>();
 		
