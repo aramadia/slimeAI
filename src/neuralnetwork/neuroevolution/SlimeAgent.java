@@ -62,7 +62,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         	} else {
         		side = SlimeV2.ServeSide.LEFT;
         	}
-        			
+
             GameResult result = SlimeV2.determineVictor(false, side, ai, this);
             if (result.getWinner() == 1) {
                 points += 10;
