@@ -308,7 +308,8 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        GameResult result = determineVictor(true, ServeSide.RIGHT, dannoAI, dannoAI2);
+        SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
+        GameResult result = determineVictor(true, ServeSide.RIGHT, human, threeSwapSlimeAI);
         System.out.println("winner = player " + result.getWinner());
     }
 

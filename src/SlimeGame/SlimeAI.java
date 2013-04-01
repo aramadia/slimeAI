@@ -49,8 +49,8 @@ public abstract class SlimeAI
             p2XV = -player1.playerXV;
             p2YV = player1.playerYV;
 
-            p1Fire = player2.onScoringRun();
-            p2Fire = player1.onScoringRun();
+            p1Fire = player2.onScoringRun(); //disabled
+            p2Fire = player1.onScoringRun(); //disabled
 
         } else {
             ballX = ball.ballX;
@@ -68,8 +68,8 @@ public abstract class SlimeAI
             p2XV = player2.playerXV;
             p2YV = player2.playerYV;
 
-            p1Fire = player1.onScoringRun(); //dont think this works, fix it
-            p2Fire = player2.onScoringRun(); //dont think this works, fix it
+            p1Fire = player1.onScoringRun(); //disabled
+            p2Fire = player2.onScoringRun(); //disabled
         }
         
 

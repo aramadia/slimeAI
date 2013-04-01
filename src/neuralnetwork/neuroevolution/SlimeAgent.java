@@ -31,27 +31,27 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 		// play a set deterministic series of games
 
-        int NUM_GAMES = 20;
-        
-        
+        int NUM_GAMES = 10;
 
         SlimeAI crapAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
+        SlimeAI threeWaySwapAI = new ThreeSwapSlimeAI();
 
         int points = 0;
         for (int i = 0; i < NUM_GAMES; i++) {
         	SlimeAI ai = null;
         	SlimeV2.ServeSide side = null;
-        	
-        	if (i < 7) {
-        		ai = crapAI;
-        	} else if (i < 14){
-        		
-        		ai = dannoAI;
-        	} else {
-        		ai = dannoAI2;
-        	}
+
+            ai = threeWaySwapAI;
+//        	if (i < 7) {
+//        		ai = crapAI;
+//        	} else if (i < 14){
+//
+//        		ai = dannoAI;
+//        	} else {
+//        		ai = dannoAI2;
+//        	}
         	if (i % 2 == 0) {
         		side = SlimeV2.ServeSide.RIGHT;
         	} else {
@@ -161,8 +161,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     }
 
     public static void main(String[] args) {
-        SlimeAgent slimeAgent = new SlimeAgent();
-        slimeAgent.load();
+        ThreeSwapSlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
         SlimeAgent ai2 = new SlimeAgent();
         ai2.load();
         
@@ -170,7 +169,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI human = null;
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.LEFT, slimeAgent, ai2);
+        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.LEFT, threeSwapSlimeAI, ai2);
     }
 
 	@Override
