@@ -11,4 +11,5 @@ public interface Agent {
 
     public void save();
     public void load();
+    
 }
