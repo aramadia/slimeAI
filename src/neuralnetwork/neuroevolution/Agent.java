@@ -10,4 +10,5 @@ public interface Agent {
 	public Agent mutate(double mutationRate);
 
     public void save();
+    public void load();
 }
