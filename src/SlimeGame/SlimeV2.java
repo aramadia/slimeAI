@@ -270,7 +270,8 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
             gameResult.setWinner(2);
         }
         gameResult.setNumFrames(frames);
-        gameResult.setNumNetCrosses(balls[0].leftToRightCrosses);
+        gameResult.setLtrNetCrosses(balls[0].leftToRightCrosses);
+        gameResult.setRtlNetCrosses(balls[0].rightToLeftCrosses);
 
         return gameResult;
     }
@@ -311,6 +312,8 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
         GameResult result = determineVictor(true, ServeSide.RIGHT, human, threeSwapSlimeAI);
         System.out.println("winner = player " + result.getWinner());
+        System.out.println("ltr num crosses = " + result.getLtrNetCrosses());
+        System.out.println("rtl num crosses = " + result.getRtlNetCrosses());
     }
 
     /**

@@ -1,11 +1,10 @@
 package neuralnetwork.neuroevolution;
 
 import SlimeGame.*;
+import neuralnetwork.core.NeuralNetwork;
 
 import java.io.*;
 import java.util.Random;
-
-import neuralnetwork.core.NeuralNetwork;
 
 public class SlimeAgent extends SlimeAI implements Agent {
 	
@@ -60,16 +59,17 @@ public class SlimeAgent extends SlimeAI implements Agent {
 //        	}
         	if (i % 2 == 0) {
         		side = SlimeV2.ServeSide.RIGHT;
-        	} else {
-        		side = SlimeV2.ServeSide.LEFT;
-        	}
+            }
+//        	} else {
+//        		side = SlimeV2.ServeSide.LEFT;
+//        	}
         			
             GameResult result = SlimeV2.determineVictor(false, side, ai, this);
-            if (result.getWinner() == 1) {
-                points += 100;
-            } else {
-                points += result.getNumNetCrosses();
-            }
+//            if (result.getWinner() == 1) {
+//                points += 100;
+//            } else {
+                points += result.getRtlNetCrosses();
+//            }
         }
 
         // Compute the average fitness independent of the number of games

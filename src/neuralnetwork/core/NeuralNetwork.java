@@ -312,7 +312,7 @@ public class NeuralNetwork {
  
     }
     public void loadWeights(double[] weights) {    	
-    	if (weights.length != numWeights()) throw new IllegalArgumentException("Inccorect length");
+    	if (weights.length != numWeights()) throw new IllegalArgumentException("Incorrect length");
     	int cur = 0;
     	for (NeuralLayer l: layer) {
     		for (Node n: l.node) {

@@ -12,7 +12,8 @@ public class GameResult {
     private int winner;
     private int numTouches;
     private long numFrames;      // NOT YET IMPLEMENTED
-    private int numNetCrosses;
+    private int rtlNetCrosses;
+    private int ltrNetCrosses;
 
     public int getWinner() {
         return winner;
@@ -38,11 +39,19 @@ public class GameResult {
         this.numFrames = numFrames;
     }
 
-    public int getNumNetCrosses() {
-        return numNetCrosses;
+    public int getRtlNetCrosses() {
+        return rtlNetCrosses;
     }
 
-    public void setNumNetCrosses(int numNetCrosses) {
-        this.numNetCrosses = numNetCrosses;
+    public void setRtlNetCrosses(int rtlNetCrosses) {
+        this.rtlNetCrosses = rtlNetCrosses;
+    }
+
+    public int getLtrNetCrosses() {
+        return ltrNetCrosses;
+    }
+
+    public void setLtrNetCrosses(int ltrNetCrosses) {
+        this.ltrNetCrosses = ltrNetCrosses;
     }
 }
