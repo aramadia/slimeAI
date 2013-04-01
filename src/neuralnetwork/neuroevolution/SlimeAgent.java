@@ -5,6 +5,8 @@ import SlimeGame.*;
 import java.io.*;
 import java.util.Random;
 
+import neuralnetwork.core.NeuralNetwork;
+
 public class SlimeAgent extends SlimeAI implements Agent {
 	
 	public neuralnetwork.core.NeuralNetwork nn;
@@ -14,7 +16,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
 	/** Outputs passed back to the input at each day */
 	public static final int NUM_MEMORY_NODES = 0;
 
-    public static final int NUM_INPUT_NODES = 12;
+    public static final int NUM_INPUT_NODES = 13;
     public static final int NUM_OUTPUT_NODES = 2;
 
 	
@@ -23,7 +25,9 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 
     public SlimeAgent() {
-		nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
+    	int[] layerStructure = new int[] {NUM_INPUT_NODES, 25, 25, NUM_OUTPUT_NODES};
+		nn = new NeuralNetwork(layerStructure);
+    	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
 		nn.randomizeWeights();
 	}
 	
@@ -144,7 +148,9 @@ public class SlimeAgent extends SlimeAI implements Agent {
         		p2X / gameWidth, 
         		p2Y / gameHeight, 
         		normalizeVelocity(p2XV),
-        		normalizeVelocity(p2YV)};
+        		normalizeVelocity(p2YV),
+        		1.0	// bias node
+        		};
         double[] outputs = nn.process(inputs);
 
         if (outputs[0] < 0.4) {

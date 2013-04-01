@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
-    public static final int STARTING_POINTS = 5;
+    public static final int STARTING_POINTS = 3;
     private static final long MAX_FRAMES = 50000;
 
     public enum ServeSide {
