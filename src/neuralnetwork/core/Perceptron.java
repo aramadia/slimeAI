@@ -42,7 +42,7 @@ public class Perceptron implements Node{
 		for (int i = 0; i < input.length; i++) {
 			sum += weight[i] * input[i];
 		}
-		prevAct = fast_sigmoid(sum);
+		prevAct = actFunc(sum);
 		return prevAct;
 	}
 	
@@ -81,7 +81,7 @@ public class Perceptron implements Node{
 	 * @return
 	 */
 	public final static double actDeriv(double x) {
-		double t = fast_sigmoid(x);
+		double t = actFunc(x);
 		return t * (1-t);
 	}
 	

@@ -15,7 +15,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
 	/** Outputs passed back to the input at each day */
 	public static final int NUM_MEMORY_NODES = 0;
 
-    public static final int NUM_INPUT_NODES = 13;
+    public static final int NUM_INPUT_NODES = 9;
     public static final int NUM_OUTPUT_NODES = 2;
     
     public static final int DEFAULT_NUM_GAMES = 10;
@@ -26,7 +26,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 
     public SlimeAgent() {
-    	int[] layerStructure = new int[] {NUM_INPUT_NODES, 60, 25, NUM_OUTPUT_NODES};
+    	int[] layerStructure = new int[] {NUM_INPUT_NODES, 45, NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
 		nn.randomizeWeights();
@@ -65,7 +65,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         			
             GameResult result = SlimeV2.determineVictor(false, side, ai, this);
             if (result.getWinner() == 1) {
-                points += 100;
+                points += 50;
             } else {
                 points += result.getRtlNetCrosses();
             }
@@ -124,7 +124,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     double normalizeVelocity(double velocity)
     {
     	// what is the maximum velocity anyways?
-    	final double maxVelocity = 100;
+    	final double maxVelocity = 50;
     	
     	// normalize (-maxVelocity,maxVelocity) to (-1,1)
     	return (velocity ) / maxVelocity;
@@ -143,21 +143,23 @@ public class SlimeAgent extends SlimeAI implements Agent {
         		ballY / gameHeight, 
         		normalizeVelocity(ballVX), 
         		normalizeVelocity(ballVY), 
-        		p1X / gameWidth, 
-        		p1Y / gameHeight, 
-        		normalizeVelocity(p1XV), 
-        		normalizeVelocity(p1YV), 
+        		(ballX - p2X) / 50.0,
+        		(ballY - p2Y) / 50.0,
+//        		p1X / gameWidth, 
+//        		p1Y / gameHeight, 
+//        		normalizeVelocity(p1XV), 
+//        		normalizeVelocity(p1YV), 
         		p2X / gameWidth, 
         		p2Y / gameHeight, 
-        		normalizeVelocity(p2XV),
-        		normalizeVelocity(p2YV),
+//        		normalizeVelocity(p2XV),
+//        		normalizeVelocity(p2YV),
         		1.0	// bias node
         		};
         double[] outputs = nn.process(inputs);
 
-        if (outputs[0] < 0.4) {
+        if (outputs[0] < 0.5) {
             startMoveTowardsNet();
-        } else if (outputs[0] > 0.6) {
+        } else if (outputs[0] > 0.5) {
             startMoveAwayFromNet();
         } else {
             stopMoving();
@@ -177,7 +179,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI human = null;
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.LEFT, threeSwapSlimeAI, ai2);
+        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, crapAI, ai2);
     }
 
 	@Override

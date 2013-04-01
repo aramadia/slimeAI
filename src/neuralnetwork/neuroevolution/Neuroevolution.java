@@ -80,9 +80,9 @@ public class Neuroevolution implements Runnable{
 				fitness[i] = futureFitness.get(i).get();
 								
 				if (fitness[i] > allBestFitness) {
-					
+					System.out.println("Fitness check");
 					// Accurately determine the fitness
-					double accurateFitness = agents[i].evaluateFitness(50);
+					double accurateFitness = fitness[i];//agents[i].evaluateFitness(50);
 					if (accurateFitness > allBestFitness)
 					{
 						allBestAgent = agents[i];
