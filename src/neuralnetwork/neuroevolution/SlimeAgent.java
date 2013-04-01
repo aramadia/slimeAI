@@ -18,7 +18,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     public static final int NUM_INPUT_NODES = 9;
     public static final int NUM_OUTPUT_NODES = 2;
     
-    public static final int DEFAULT_NUM_GAMES = 10;
+    public static final int DEFAULT_NUM_GAMES = 30;
 
 	
 	private static Random r = new Random();
