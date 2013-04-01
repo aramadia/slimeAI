@@ -18,6 +18,8 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
     public static final int NUM_INPUT_NODES = 13;
     public static final int NUM_OUTPUT_NODES = 2;
+    
+    public static final int DEFAULT_NUM_GAMES = 10;
 
 	
 	private static Random r = new Random();
@@ -25,24 +27,24 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 
     public SlimeAgent() {
-    	int[] layerStructure = new int[] {NUM_INPUT_NODES, 25, 25, NUM_OUTPUT_NODES};
+    	int[] layerStructure = new int[] {NUM_INPUT_NODES, 60, 25, NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
 		nn.randomizeWeights();
 	}
 	
-	public double evaluateFitness() {
+	public double evaluateFitness(int precision) {
 
 		// play a set deterministic series of games
 
-        int NUM_GAMES = 10;
+        int NUM_GAMES = precision;
 
         SlimeAI crapAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI threeWaySwapAI = new ThreeSwapSlimeAI();
 
-        int points = 0;
+        double points = 0.0;
         for (int i = 0; i < NUM_GAMES; i++) {
         	SlimeAI ai = null;
         	SlimeV2.ServeSide side = null;
@@ -70,7 +72,8 @@ public class SlimeAgent extends SlimeAI implements Agent {
             }
         }
 
-        return points;
+        // Compute the average fitness independent of the number of games
+        return points/NUM_GAMES;
 	}
 
 	@Override
@@ -180,6 +183,6 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 	@Override
 	public Double call() throws Exception {
-		return evaluateFitness();
+		return evaluateFitness(DEFAULT_NUM_GAMES);
 	}
 }
