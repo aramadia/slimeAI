@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 import javax.swing.JFrame;
 
 
-public class SlimeV2 implements Callable<Integer>, Constants {
+public class SlimeV2 implements Callable<GameResult>, Constants {
     public static final int STARTING_POINTS = 1;
 
     public enum ServeSide {
@@ -21,6 +21,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
     }
 
     SlimePanel panel = new SlimePanel();
+    GameResult gameResult = new GameResult();
     boolean shouldDraw;
     int nWidth;
     int nHeight;
@@ -202,7 +203,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         return game_over;
     }
 
-    public Integer call() {
+    public GameResult call() {
         startGame();
         boolean game_over = false;
         int i;
@@ -256,10 +257,13 @@ public class SlimeV2 implements Callable<Integer>, Constants {
 //        System.out.println("Num frames = " + frames);
 
         if (sides[0].score > sides[1].score) {
-            return 0;
+            gameResult.setWinner(0);
         } else {
-            return 1;
+            gameResult.setWinner(1);
         }
+        gameResult.setNumFrames(frames);
+
+        return gameResult;
     }
 
     private void processAIcommands() {
@@ -295,8 +299,8 @@ public class SlimeV2 implements Callable<Integer>, Constants {
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        int winner = determineVictor(true, ServeSide.RIGHT, dannoAI, dannoAI2);
-        System.out.println("winner = player " + winner);
+        GameResult result = determineVictor(false, ServeSide.RIGHT, dannoAI, dannoAI2);
+        System.out.println("winner = player " + result.getWinner());
 
     }
 
@@ -309,7 +313,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
      * @param ai2 AI for player 2 (null for human player)
      * @return 0 if player1 wins, 1 if player2 wins
      */
-    public static int determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
+    public static GameResult determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
         SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2);
 
         if (draw) {
@@ -328,11 +332,11 @@ public class SlimeV2 implements Callable<Integer>, Constants {
 
         int NTHREADS = 1;
         ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
-        Future<Integer> task = service.submit(game);
+        Future<GameResult> task = service.submit(game);
 
-        int winner = -1;
+        GameResult result = null;
         try {
-            winner = task.get();
+            result = task.get();
         } catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ExecutionException e) {
@@ -341,7 +345,7 @@ public class SlimeV2 implements Callable<Integer>, Constants {
 
         service.shutdownNow();
 
-        return winner;
+        return result;
     }
 
     /**

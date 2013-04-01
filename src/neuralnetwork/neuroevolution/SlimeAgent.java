@@ -2,6 +2,7 @@ package neuralnetwork.neuroevolution;
 
 import SlimeGame.Constants;
 import SlimeGame.CrapSlimeAI;
+import SlimeGame.GameResult;
 import SlimeGame.SlimeAI;
 import SlimeGame.SlimeV2;
 
@@ -39,8 +40,8 @@ public class SlimeAgent extends SlimeAI implements Agent {
         int wins = 0;
         for (int i = 0; i < NUM_GAMES; i++) {
             SlimeAI ai = new CrapSlimeAI();
-            int winner = SlimeV2.determineVictor(false, SlimeV2.ServeSide.LEFT, ai, this);
-            if (winner == 1) {
+            GameResult result = SlimeV2.determineVictor(false, SlimeV2.ServeSide.LEFT, ai, this);
+            if (result.getWinner() == 1) {
                 wins++;
             }
         }
