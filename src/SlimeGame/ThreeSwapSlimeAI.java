@@ -34,7 +34,7 @@ public class ThreeSwapSlimeAI extends SlimeAI {
 
     @Override
     public void moveSlime() {
-        int currentAI = slimeGame.balls[0].leftToRightCrosses % 3;
+        int currentAI = (slimeGame.balls[0].leftToRightCrosses + slimeGame.balls[0].rightToLeftCrosses) % 3;
 //        System.out.println("ThreeWay Slime AI using AI " + currentAI);
         ais.get(currentAI).moveSlime();
     }
