@@ -1,11 +1,11 @@
 package neuralnetwork.core;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 import neuralnetwork.trainer.BooleanTrainer;
 import neuralnetwork.trainer.TestSet;
 import neuralnetwork.trainer.Trainer;
-
 import util.DataSet;
 
 
@@ -29,7 +29,8 @@ public class NeuralNetwork {
 	
 	public NeuralLayer[] layer;
 	public static Random r = new Random();
-	int numInputNodes, numMiddleNodes, numOutputNodes;
+	
+	//int numInputNodes, numMiddleNodes, numOutputNodes;
 	
 	/**
 	 * Creates a three layer feed forward neural network.  
@@ -39,22 +40,88 @@ public class NeuralNetwork {
 	 */
 	public NeuralNetwork(int numInput, int numMiddleLayerNeurons, int numOutput) {
 		
-		initalize(numInput, numMiddleLayerNeurons, numOutput);
+		//initalize(numInput, numMiddleLayerNeurons, numOutput);
 		
+		ArrayList<Integer> layers = new ArrayList<Integer>();
+		layers.add(numInput);
+		layers.add(numMiddleLayerNeurons);
+		layers.add(numOutput);
+		initalize(layers);
+		
+//		int weights = numInput * numMiddleLayerNeurons + (numMiddleLayerNeurons + 1) * numOutput;
+//		
+//		int calc = numWeights();
+//		if (weights != calc) {
+//			throw new IllegalArgumentException();
+//		}
+		
+	}
+	
+	public NeuralNetwork(int[] layers) {
+		ArrayList<Integer> layerSizes = new ArrayList<Integer>();
+		for (int i =0 ; i < layers.length; i++) {
+			layerSizes.add(layers[i]);
+		}
+		initalize(layerSizes);
 	}
 
-	protected void initalize(int numInput, int numMiddleLayerNeurons,
-			int numOutput) {
-		numInputNodes = numInput;
-		numMiddleNodes = numMiddleLayerNeurons;
-		numOutputNodes = numOutput;
-		layer = new NeuralLayer[2];
-		final int numHiddenNeurons = numMiddleLayerNeurons;
-		layer[0] = new NeuralLayer(numHiddenNeurons, numInput, true);		
-		layer[1] = new NeuralLayer(numOutput, numHiddenNeurons + 1, false);		
+//	protected void initalize(int numInput, int numMiddleLayerNeurons,
+//			int numOutput) {
+//		numInputNodes = numInput;
+//		numMiddleNodes = numMiddleLayerNeurons;
+//		numOutputNodes = numOutput;
+//		layer = new NeuralLayer[2];
+//		final int numHiddenNeurons = numMiddleLayerNeurons;
+//		layer[0] = new NeuralLayer(numHiddenNeurons, numInput, true);		
+//		layer[1] = new NeuralLayer(numOutput, numHiddenNeurons + 1, false);		
+//		
+//		layer[0].initialize(layer[1]);
+//	}
+	
+	/**
+	 * Initialize a variable number of layers
+	 * First one is input, then n -1 nueral layers, final layer is output
+	 * @param layerSize
+	 */
+	protected void initalize(ArrayList<Integer> layerSize) {
 		
-		layer[0].initialize(layer[1]);
+		layer = new NeuralLayer[layerSize.size() - 1];
+		
+		for (int i = 0 ; i < layerSize.size() - 1; i++)
+		{
+			
+			boolean needBias= true;
+			
+			// the last layer has no bias
+			if (i == layerSize.size() - 2) {
+				needBias = false;
+			}
+			
+			int numNodes = layerSize.get(i + 1);
+			
+			int numInputs = layerSize.get(i);
+			// all layers except the first one has an extra bias input
+			if (i >= 1) {
+				numInputs += 1;
+			}
+			
+			
+			layer[i] = new NeuralLayer(numNodes, numInputs, needBias);
+			
+			if (i >= 1) {
+				layer[i - 1].initialize(layer[i]);
+			}
+		}
+		
+		// 3 layers
+//		layer[0] = new NeuralLayer(numHiddenNeurons, numInput, true);		
+//		layer[1] = new NeuralLayer(numOutput, numHiddenNeurons + 1, false);		
+//		
+//		layer[0].initialize(layer[1]);
+//		
 	}
+	
+	
 
     public void setNumIterations(int n) {
         numIterations = n;
@@ -235,11 +302,17 @@ public class NeuralNetwork {
     }
     
     public int numWeights() {
-    	return numInputNodes * numMiddleNodes + (numMiddleNodes + 1) * numOutputNodes;
+    	int total = 0;
+    	for (int i = 0 ; i < layer.length; i++) {
+    		total += layer[i].numWeights();
+    	}
+    	return total;
+    	// 12, 25, 2
+    	//return numInputNodes * numMiddleNodes + (numMiddleNodes + 1) * numOutputNodes;
  
     }
     public void loadWeights(double[] weights) {    	
-    	if (weights.length != numWeights()) throw new IllegalArgumentException("Inccorect length");
+    	if (weights.length != numWeights()) throw new IllegalArgumentException("Incorrect length");
     	int cur = 0;
     	for (NeuralLayer l: layer) {
     		for (Node n: l.node) {

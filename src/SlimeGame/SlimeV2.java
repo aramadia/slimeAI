@@ -13,8 +13,8 @@ import javax.swing.JFrame;
 
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
-    public static final int STARTING_POINTS = 5;
     private static final long MAX_FRAMES = 50000;
+    private static final int MAX_CONSECUTIVE_HITS = 8;
 
     public enum ServeSide {
         LEFT,
@@ -40,15 +40,15 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
     SlimeAI ai[];
 
 
-    public SlimeV2(boolean draw, ServeSide side, SlimeAI ai1, SlimeAI ai2) {
+    public SlimeV2(boolean draw, ServeSide side, SlimeAI ai1, SlimeAI ai2, int numStartingPoints) {
         shouldDraw = draw;
         sides = new Side[2];
         sides[0] = new Side(this, true,
                 50, 445,
-                Color.red, "Big Red Slime", STARTING_POINTS);
+                Color.red, "Big Red Slime", numStartingPoints);
         sides[1] = new Side(this, false,
                 555, 950,
-                Color.green, "Magic Green Slime", STARTING_POINTS);
+                Color.green, "Magic Green Slime", numStartingPoints);
 
         players = new Player[2];
         players[0] = new Player(sides[0], 200);
@@ -120,7 +120,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
             sides[0].awardPoints(1);
             sides[1].awardPoints(-1);
         }
-    
+
         /* Check if any side touched the ball or if any side is out
          * of lives. */
         ball_touched = false;
@@ -221,6 +221,19 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
 	        /* Check if any of the balls have hit the floor */
 
+            if (balls[0].crossed) {
+                for (Player player : players) {
+                    player.hits = 0;
+                }
+                balls[0].crossed = false;
+            }
+
+            for (Player player : players) {
+                if (player.hits > MAX_CONSECUTIVE_HITS) {
+                    game_over = ballLostAt(balls[0], player.initialX);
+                }
+            }
+
             for (i = 0; i < balls.length; i++) {
                 boolean is_lost;
                 Ball b;
@@ -270,6 +283,8 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
             gameResult.setWinner(2);
         }
         gameResult.setNumFrames(frames);
+        gameResult.setLtrNetCrosses(balls[0].leftToRightCrosses);
+        gameResult.setRtlNetCrosses(balls[0].rightToLeftCrosses);
 
         return gameResult;
     }
@@ -307,9 +322,11 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI crapSlimeAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        GameResult result = determineVictor(true, ServeSide.RIGHT, dannoAI, dannoAI2);
+        SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
+        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI, 5);
         System.out.println("winner = player " + result.getWinner());
-
+        System.out.println("ltr num crosses = " + result.getLtrNetCrosses());
+        System.out.println("rtl num crosses = " + result.getRtlNetCrosses());
     }
 
     /**
@@ -321,8 +338,8 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
      * @param ai2 AI for player 2 (null for human player)
      * @return 0 if player1 wins, 1 if player2 wins
      */
-    public static GameResult determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2) {
-        SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2);
+    public static GameResult determineVictor(boolean draw, ServeSide serveSide, SlimeAI ai1, SlimeAI ai2, int numStartingPoints) {
+        SlimeV2 game = new SlimeV2(draw, serveSide, ai1, ai2, numStartingPoints);
 
         if (draw) {
             JFrame f = new JFrame();

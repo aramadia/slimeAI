@@ -19,6 +19,7 @@ public class Player implements Constants {
     int playerXV;
     int playerYV;
     int pBlink;
+    int hits;
 
     public Player(Side side, int initialX) {
         this.side = side;
@@ -31,6 +32,7 @@ public class Player implements Constants {
         playerY = 0;
         playerXV = 0;
         playerYV = 0;
+        hits = 0;
     }
 
     public boolean onScoringRun() {
@@ -137,8 +139,10 @@ public class Player implements Constants {
                 if (b.ballVY > 22)
                     b.ballVY = 22;
             }
-            side.setTouched();
+            hits++;
+//            System.out.println(initialX%800 + " Consecutive hits " + hits);
         }
+        side.setTouched();
     }
 
     public void drawOnto(Graphics screen) {

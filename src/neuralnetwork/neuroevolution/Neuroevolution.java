@@ -26,6 +26,8 @@ public class Neuroevolution implements Runnable{
 	final int numAgents = 30; //30
 	final int numIterations = 2000;
 	
+	static final int HIGH_PRECISION_FITNESS = 100;
+	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
 	static DiscreteDataSet avgFitnessDS = new DiscreteDataSet();
 	
@@ -53,7 +55,7 @@ public class Neuroevolution implements Runnable{
 
 		}
 		
-		final int NTHREADS = 4;
+		final int NTHREADS = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
         ArrayList<Future<Double>> futureFitness = new ArrayList<Future<Double>>();
 		
@@ -90,8 +92,17 @@ public class Neuroevolution implements Runnable{
 				fitness[i] = futureFitness.get(i).get();
 				
 				if (fitness[i] > allBestFitness) {
-					allBestAgent = children[i];
-					allBestFitness = fitness[i];
+					// If you see this too often, itll need to optimized
+					System.out.println("Fitness check");
+					
+					// Accurately determine the fitness, ight of just got lucky
+					double accurateFitness = children[i].evaluateFitness(HIGH_PRECISION_FITNESS);
+					if (accurateFitness > allBestFitness)
+					{
+						allBestAgent = children[i];
+						allBestFitness = accurateFitness;
+						System.out.println("New best record of " + allBestFitness);
+					}
 				}
 				bestFitness = Math.max(bestFitness, fitness[i]);
 				realTotalFitness += fitness[i];

@@ -5,6 +5,7 @@ public class NeuralLayer {
 	public Node[] node;
 	/** The layer to food inputs to */
 	NeuralLayer children;
+	private int numInputs;
 	
 	/**
 	 * Creates new neural layer
@@ -22,6 +23,7 @@ public class NeuralLayer {
 			node[i] = new Perceptron(numInputs);
 		}
 		if (bias) node[totalNodes - 1] = new Bias();
+		this.numInputs = numInputs;
 		
 	}
 	
@@ -42,6 +44,18 @@ public class NeuralLayer {
 		for (Node n: node	) {
 			n.randomizeWeights();
 		}
+	}
+	
+	/**
+	 * Number of weights for this layer
+	 * @return
+	 */
+	public int numWeights() {
+		int totalWeights = 0;
+		for (int i = 0; i < node.length; i++) {
+			totalWeights += node[i].numWeights();
+		}
+		return totalWeights;
 	}
 	
 	@Override
