@@ -1,6 +1,7 @@
 package SlimeGame;
 
 import neuralnetwork.neuroevolution.SlimeAgent;
+import neuralnetwork.neuroevolution.bestai.BeatsDefenseAgent;
 import neuralnetwork.neuroevolution.bestai.DefenseAgent;
 
 import java.awt.Color;
@@ -323,58 +324,17 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
 
     public static void main(String args[]) {
-//        SlimeAI human = null;
-//        SlimeAI loseAI = new LoseAI();
-//        SlimeAI crapSlimeAI = new CrapSlimeAI();
-//        SlimeAI dannoAI = new DannoAI();
-//        SlimeAI dannoAI2 = new DannoAI2();
-//        SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-//        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI, 5);
-//        System.out.println("winner = player " + result.getWinner());
-        theGauntlet();
+        SlimeAI human = null;
+        SlimeAI loseAI = new LoseAI();
+        SlimeAI crapSlimeAI = new CrapSlimeAI();
+        SlimeAI dannoAI = new DannoAI();
+        SlimeAI dannoAI2 = new DannoAI2();
+        SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
+        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI, 5);
+        System.out.println("winner = player " + result.getWinner());
+     
     }
 
-    public static void theGauntlet() {
-        SlimeAI evaluatedAI = new DefenseAgent();
-        List<SlimeAI> challengers = new LinkedList<SlimeAI>();
-        challengers.add(new CrapSlimeAI());
-        challengers.add(new DannoAI());
-        challengers.add(new DannoAI2());
-        challengers.add(new ThreeSwapSlimeAI());
-        int[] wins = new int[challengers.size()];
-
-        final int NTHREADS = Runtime.getRuntime().availableProcessors();
-        ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
-        ArrayList<Future<Double>> futureFitness = new ArrayList<Future<Double>>();
-        int NUM_GAMES = 100;
-        int STARTING_POINTS = 5;
-        ServeSide side;
-        int totalWins = 0;
-
-        for (int i = 0; i < challengers.size(); i++) {
-            SlimeAI challenger = challengers.get(i);
-            for (int j = 0; j < NUM_GAMES; j++) {
-                if (j % 2 == 0) {
-                    side = SlimeV2.ServeSide.RIGHT;
-                } else {
-                    side = SlimeV2.ServeSide.LEFT;
-                }
-                GameResult result = determineVictor(false, side, challenger, evaluatedAI, STARTING_POINTS);
-                if (result.getWinner() == 1) {
-                    wins[i] = wins[i] + 1;
-                    totalWins++;
-                }
-            }
-        }
-
-        System.out.println("==================");
-        for (int i = 0; i < challengers.size(); i++) {
-            SlimeAI challenger = challengers.get(i);
-            System.out.println(challenger.getClass().getSimpleName() + " = " + wins[i] + "/" + NUM_GAMES);
-        }
-        System.out.println("Total = " + totalWins + "/" + challengers.size()*NUM_GAMES);
-        System.out.println("==================");
-    }
 
     /**
      *
