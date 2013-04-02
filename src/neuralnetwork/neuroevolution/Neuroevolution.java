@@ -21,14 +21,14 @@ import lattice.Engine;
 
 public class Neuroevolution implements Runnable{
 
-	private static final double mutationRate = .1;
+	private static final double mutationRate = .025;
 	private static final boolean verbose = true;
-	final int numAgents = 100; //30
+	final int numAgents = 30; //30
 	final int numIterations = 2000;
 	
 	static final int HIGH_PRECISION_FITNESS = 100;
 	
-	static final double crossoverPrb = 0.7;
+	static final double crossoverPrb = 0.50;
 	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
 	static DiscreteDataSet avgFitnessDS = new DiscreteDataSet();
@@ -147,14 +147,13 @@ public class Neuroevolution implements Runnable{
     Agent[] performSelect(Agent[] allAgents){    	
     	Agent[] newGenAgents = new Agent[numAgents];
     	// Get top n agents from the current pool
-    	int numTopAgents = 2;
+    	int numTopAgents = numAgents/2;
     	for(int i = 0; i<numTopAgents; i++){
     		newGenAgents[i] = allAgents[allAgents.length-1-i];
     	}
     	
     	// Use Roulette wheel to select the rest numAgents-numTopAgents agents by using roulette wheel
     	double totalFitness = 0;
-    	assert numTopAgents <= allAgents.length;
     	int numRemainingAgents = allAgents.length-numTopAgents;
 		for (int i = 0; i<numRemainingAgents; i++) {
 			totalFitness += allAgents[i].getFitness();
@@ -178,7 +177,6 @@ public class Neuroevolution implements Runnable{
     		}
     		
     	}
-    	assert newGenAgents.length == numAgents;
     	return newGenAgents;
     }
     void performMutation(Agent[] population){
