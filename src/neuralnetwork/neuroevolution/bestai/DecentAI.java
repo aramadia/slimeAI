@@ -44,8 +44,7 @@ public class DecentAI extends SlimeAI implements Agent {
     public DecentAI() {
     	int[] layerStructure = new int[] {NUM_INPUT_NODES, 35, 15,NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
-    	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
-		nn.randomizeWeights();
+    	load();
 	}
     
     /**
@@ -245,7 +244,6 @@ public class DecentAI extends SlimeAI implements Agent {
     	
         ThreeSwapSlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
         DecentAI ai2 = new DecentAI();
-        ai2.load();
         
         SlimeAI crapAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();

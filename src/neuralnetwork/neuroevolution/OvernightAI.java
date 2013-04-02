@@ -24,7 +24,7 @@ import SlimeGame.SlimeV2;
 import SlimeGame.SwapSlimeAI;
 import SlimeGame.ThreeSwapSlimeAI;
 
-public class SlimeAgent extends SlimeAI implements Agent {
+public class OvernightAI extends SlimeAI implements Agent {
 	
 	public neuralnetwork.core.NeuralNetwork nn;
 	//NeuralNetworkSlimeAi ai;
@@ -40,14 +40,13 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 	
 	private static Random r = new Random();
-    private static final String SaveFile = "test.txt";
+    private static final String SaveFile = "overnight";
 
 
-    public SlimeAgent() {
+    public OvernightAI() {
     	int[] layerStructure = new int[] {NUM_INPUT_NODES, 60, NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
-    	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
-		nn.randomizeWeights();
+    	load();
 	}
     
     /**

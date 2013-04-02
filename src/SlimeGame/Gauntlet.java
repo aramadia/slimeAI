@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import neuralnetwork.neuroevolution.OvernightAI;
 import neuralnetwork.neuroevolution.SlimeAgent;
 import neuralnetwork.neuroevolution.bestai.BeatsDefenseAgent;
 import neuralnetwork.neuroevolution.bestai.DefenseAgent;
@@ -104,8 +105,8 @@ public class Gauntlet implements Callable<GameResult>{
     }
     
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-    	SlimeAgent ai = new SlimeAgent();
-    	ai.load();
+    	OvernightAI ai = new OvernightAI();
+    
 		theGauntlet( ai);
 	}
 }
