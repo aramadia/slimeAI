@@ -1,12 +1,24 @@
-package neuralnetwork.neuroevolution;
+package neuralnetwork.neuroevolution.bestai;
 
-import SlimeGame.*;
-import neuralnetwork.core.NeuralNetwork;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Random;
 
-public class SlimeAgent extends SlimeAI implements Agent {
+import neuralnetwork.core.NeuralNetwork;
+import neuralnetwork.neuroevolution.Agent;
+import SlimeGame.Constants;
+import SlimeGame.CrapSlimeAI;
+import SlimeGame.DannoAI;
+import SlimeGame.DannoAI2;
+import SlimeGame.GameResult;
+import SlimeGame.SlimeAI;
+import SlimeGame.SlimeV2;
+import SlimeGame.ThreeSwapSlimeAI;
+
+public class BeatsDefenseAgent extends SlimeAI implements Agent {
 	
 	public neuralnetwork.core.NeuralNetwork nn;
 	//NeuralNetworkSlimeAi ai;
@@ -22,14 +34,15 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 	
 	private static Random r = new Random();
-    private static final String SaveFile = "test.txt";
+    private static final String SaveFile = "beatsdefenseagent";
 
 
-    public SlimeAgent() {
+    public BeatsDefenseAgent() {
     	int[] layerStructure = new int[] {NUM_INPUT_NODES, 45, NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
-		nn.randomizeWeights();
+		
+		load();
 	}
     
     /**
@@ -109,7 +122,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
 			}
 		}
 
-		SlimeAgent a = new SlimeAgent();
+		BeatsDefenseAgent a = new BeatsDefenseAgent();
 		a.nn.loadWeights(weights);
 		
 		return a;
@@ -219,14 +232,14 @@ public class SlimeAgent extends SlimeAI implements Agent {
     	
     	
         ThreeSwapSlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-        SlimeAgent ai2 = new SlimeAgent();
+        BeatsDefenseAgent ai2 = new BeatsDefenseAgent();
         ai2.load();
         
         SlimeAI crapAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI human = null;
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, human, ai2, 5);
+        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, human, new BeatsDefenseAgent(), 5);
     }
 
 	@Override
