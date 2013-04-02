@@ -3,6 +3,7 @@ package SlimeGame;
 
 import neuralnetwork.neuroevolution.SlimeAgent;
 import neuralnetwork.neuroevolution.bestai.DefenseAgent;
+import neuralnetwork.neuroevolution.bestai.JDefSlimeAgent;
 import neuralnetwork.neuroevolution.bestai.TooSickAI;
 
 import javax.swing.*;
@@ -339,7 +340,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SwapSlimeAI swapSlimeAI = new SwapSlimeAI(slimeAIs);
         SlimeAgent slimeAgent = new SlimeAgent();
         slimeAgent.load();
-        GameResult result = determineVictor(true, serveSide, human, twoSickAI, 5);
+        GameResult result = determineVictor(true, serveSide, new TooSickAI(), new JDefSlimeAgent(), 5);
         System.out.println("winner = player " + result.getWinner());
 
     }

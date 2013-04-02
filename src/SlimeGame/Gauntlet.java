@@ -51,6 +51,8 @@ public class Gauntlet implements Callable<GameResult>{
         challengers.add(new DefenseAgent());
         challengers.add(new BeatsDefenseAgent());
         int[] wins = new int[challengers.size()];
+        int[] losses = new int[challengers.size()];
+        int[] ties = new int[challengers.size()];
 
         final int NTHREADS = Runtime.getRuntime().availableProcessors();
         
@@ -59,10 +61,12 @@ public class Gauntlet implements Callable<GameResult>{
         ArrayList<Future<GameResult>> futureResult = new ArrayList<Future<GameResult>>();
         
         
-        int NUM_GAMES = 100;
+        int NUM_GAMES = 50;
         int STARTING_POINTS = 5;
         ServeSide side;
         int totalWins = 0;
+        int totalLosses = 0;
+        int totalTies = 0;
 
         for (int i = 0; i < challengers.size(); i++) {
             SlimeAI challenger = challengers.get(i);
@@ -81,7 +85,8 @@ public class Gauntlet implements Callable<GameResult>{
                 futureResult.add(result);
             }
         }
-        
+
+        System.out.println("==================");
         int cur = 0;
         for (int i = 0; i < challengers.size(); i++) {
         	for (int j = 0; j < NUM_GAMES; j++) {
@@ -89,16 +94,25 @@ public class Gauntlet implements Callable<GameResult>{
         		if (result.getWinner() == 1) {
                     wins[i] = wins[i] + 1;
                     totalWins++;
+                } else if (result.getWinner() == 0) {
+                    losses[i] = losses[i] + 1;
+                    totalLosses++;
+                } else {
+                    ties[i] = ties[i] + 1;
+                    totalTies++;
                 }
         	}
+            SlimeAI challenger = challengers.get(i);
+            System.out.println(challenger.getClass().getSimpleName() + " = "
+                    + wins[i] + "/" + NUM_GAMES + "W | "
+                    + losses[i] + "/" + NUM_GAMES + "L | "
+                    + ties[i]  + "/" + NUM_GAMES + "T"
+            );
         }
 
-        System.out.println("==================");
-        for (int i = 0; i < challengers.size(); i++) {
-            SlimeAI challenger = challengers.get(i);
-            System.out.println(challenger.getClass().getSimpleName() + " = " + wins[i] + "/" + NUM_GAMES);
-        }
-        System.out.println("Total = " + totalWins + "/" + challengers.size()*NUM_GAMES);
+        System.out.println("Total Wins   = " + totalWins + "/" + challengers.size()*NUM_GAMES);
+        System.out.println("Total Losses = " + totalLosses + "/" + challengers.size()*NUM_GAMES);
+        System.out.println("Total Ties   = " + totalTies + "/" + challengers.size()*NUM_GAMES);
         System.out.println("==================");
         
         service.shutdown();
