@@ -25,7 +25,6 @@ public class SwapSlimeAI extends SlimeAI{
     @Override
     public void initialize(SlimeV2 slimeGame, Player player) {
         super.initialize(slimeGame, player);
-        Collections.shuffle(ais);
         for (SlimeAI ai : ais) {
             ai.initialize(slimeGame, player);
         }
