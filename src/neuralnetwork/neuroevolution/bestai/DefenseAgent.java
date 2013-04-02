@@ -29,6 +29,7 @@ public class DefenseAgent extends SlimeAI implements Agent {
     public DefenseAgent() {
     	int[] layerStructure = new int[] {NUM_INPUT_NODES, 40, NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
+        load();
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
 //		nn.randomizeWeights();
 	}
