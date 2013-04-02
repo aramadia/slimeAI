@@ -21,12 +21,14 @@ import lattice.Engine;
 
 public class Neuroevolution implements Runnable{
 
-	private static final double mutationRate = .025;
+	private static final double mutationRate = .1;
 	private static final boolean verbose = true;
-	final int numAgents = 30; //30
+	final int numAgents = 100; //30
 	final int numIterations = 2000;
 	
 	static final int HIGH_PRECISION_FITNESS = 100;
+	
+	static final double crossoverPrb = 0.7;
 	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
 	static DiscreteDataSet avgFitnessDS = new DiscreteDataSet();
@@ -180,7 +182,7 @@ public class Neuroevolution implements Runnable{
     	return newGenAgents;
     }
     void performMutation(Agent[] population){
-    	for (int n = 0; n < numAgents; n++) {		
+    	for (int n = 0; n < numAgents; n++) {
     		Agent curAgent = population[n];
 			curAgent.mutate(mutationRate);
 		}
@@ -190,10 +192,15 @@ public class Neuroevolution implements Runnable{
     	for(int i = 0; i<parents.length/2; i++){
     		Agent parent1 = parents[2*i];
     		Agent parent2 = parents[2*i+1];
+    		
     		double[] weights_1 = parent1.getNN().retrieveWeights();
     		double[] weights_2 = parent2.getNN().retrieveWeights();
-    		Random r = new Random();
-    		int crossoverPoint = r.nextInt(weights_1.length);
+    		int crossoverPoint = weights_1.length;
+    		if(Math.random() <= crossoverPrb){
+    			Random r = new Random();
+    			crossoverPoint = r.nextInt(weights_1.length);
+    		}
+    		//System.out.println(crossoverPoint);
     		double[] new_weights_1 = new double[weights_1.length];
     		double[] new_weights_2 = new double[weights_1.length];
     		for(int j = 0; j<weights_1.length; j++){
