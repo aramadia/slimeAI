@@ -1,6 +1,5 @@
 package neuralnetwork.neuroevolution;
 
-import neuralnetwork.core.NeuralNetwork;
 import neuralnetwork.core.Perceptron;
 
 public class NNPerformance {

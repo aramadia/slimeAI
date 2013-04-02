@@ -1,6 +1,5 @@
 package SlimeGame;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class ThreeSwapSlimeAI extends SlimeAI {
 
     @Override
     public void moveSlime() {
-        int currentAI = (slimeGame.balls[0].leftToRightCrosses + slimeGame.balls[0].rightToLeftCrosses) % 3;
+        int currentAI = (slimeGame.balls[0].leftToRightCrosses + slimeGame.balls[0].rightToLeftCrosses) % ais.size();
 //        System.out.println("ThreeWay Slime AI using AI " + currentAI);
         ais.get(currentAI).moveSlime();
     }
