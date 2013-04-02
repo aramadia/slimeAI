@@ -31,6 +31,24 @@ public class SlimeAgent extends SlimeAI implements Agent {
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
 		nn.randomizeWeights();
 	}
+    
+    /**
+     * a*(1-r^n)/(1-r)
+     * @param r
+     * @param n
+     */
+    private static final double geometricSum(double r, double n) {
+    	return 1*(1 - Math.pow(r, n))/(1-r);
+    }
+    
+    private static final double weightNetCrosses(int n) {
+    	double expNetCrosses = 0;
+    	if (n != 0) {
+    		expNetCrosses = geometricSum(0.95, n);
+    	}
+    	return expNetCrosses;
+
+    }
 	
 	public double evaluateFitness(int precision) {
 
@@ -67,7 +85,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
             if (result.getWinner() == 1) {
                 points += 10;
             } else {
-                points += result.getRtlNetCrosses();
+            	points += weightNetCrosses(result.getRtlNetCrosses());
             }
         }
 
@@ -173,6 +191,28 @@ public class SlimeAgent extends SlimeAI implements Agent {
     }
 
     public static void main(String[] args) {
+    	
+    	/*
+    	 * 0 -> 0.0
+			1 -> 1.0
+			2 -> 1.9499999999999988
+			3 -> 2.8524999999999996
+			4 -> 3.7098749999999994
+			5 -> 4.52438125
+			6 -> 5.298162187499999
+			7 -> 6.033254078125
+			8 -> 6.731591374218749
+			9 -> 7.395011805507812
+			10 -> 8.025261215232419
+    	
+    	for (int netCrosses = 0; netCrosses < 30; netCrosses++)
+    	{
+        	double expNetCrosses = weightNetCrosses(netCrosses);  
+        	System.out.println(netCrosses + " -> " + expNetCrosses);
+    	}
+    	 */
+    	
+    	
         ThreeSwapSlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
         SlimeAgent ai2 = new SlimeAgent();
         ai2.load();
