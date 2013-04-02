@@ -1,10 +1,24 @@
 package neuralnetwork.neuroevolution;
 
-import SlimeGame.*;
-import neuralnetwork.core.NeuralNetwork;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Random;
+
+import neuralnetwork.core.NeuralNetwork;
+import neuralnetwork.neuroevolution.bestai.DefenseAgent;
+import SlimeGame.Constants;
+import SlimeGame.CrapSlimeAI;
+import SlimeGame.DannoAI;
+import SlimeGame.DannoAI2;
+import SlimeGame.GameResult;
+import SlimeGame.SlimeAI;
+import SlimeGame.SlimeV2;
+import SlimeGame.SwapSlimeAI;
+import SlimeGame.ThreeSwapSlimeAI;
 
 public class SlimeAgent extends SlimeAI implements Agent {
 	
@@ -60,6 +74,13 @@ public class SlimeAgent extends SlimeAI implements Agent {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI threeWaySwapAI = new ThreeSwapSlimeAI();
+        
+        ArrayList<SlimeAI> slimeAIs = new ArrayList<SlimeAI>();
+        slimeAIs.add(new DefenseAgent());
+        slimeAIs.add(dannoAI2);
+        slimeAIs.add(dannoAI);
+        slimeAIs.add(crapAI);
+        SwapSlimeAI swapSlimeAI = new SwapSlimeAI(slimeAIs);
 
         double points = 0.0;
         for (int i = 0; i < NUM_GAMES; i++) {
@@ -81,7 +102,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
         		side = SlimeV2.ServeSide.LEFT;
         	}
 
-            GameResult result = SlimeV2.determineVictor(false, side, ai, this, 1);
+            GameResult result = SlimeV2.determineVictor(false, side, swapSlimeAI, this, 1);
             final int WINNING_WEIGHT = 40;
             
             if (result.getWinner() == 1) {

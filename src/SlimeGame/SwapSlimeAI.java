@@ -2,6 +2,7 @@ package SlimeGame;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,6 +16,7 @@ public class SwapSlimeAI extends SlimeAI{
     private List<SlimeAI> ais;
     private int currentAI;
     private int lastSideCount;
+    private static Random r = new Random();
 
     public SwapSlimeAI(List<SlimeAI> ais) {
         this.ais = ais;
@@ -32,8 +34,7 @@ public class SwapSlimeAI extends SlimeAI{
     @Override
     public void moveSlime() {
         if (slimeGame.frames == 1) {
-            System.out.println("setting ai");
-            currentAI = ((int) (Math.random() * ais.size()));
+            currentAI = r.nextInt(ais.size());
         }
 
         int currentSideCount;
@@ -45,11 +46,10 @@ public class SwapSlimeAI extends SlimeAI{
 
         if (lastSideCount != currentSideCount) {
             lastSideCount = currentSideCount;
-            currentAI = ((int) (Math.random() * ais.size()));
+            currentAI = r.nextInt(ais.size());
         }
 
         SlimeAI slimeAI = ais.get(currentAI);
-        System.out.println("Now playing " + slimeAI.getClass().getSimpleName());
         slimeAI.moveSlime();
     }
 
