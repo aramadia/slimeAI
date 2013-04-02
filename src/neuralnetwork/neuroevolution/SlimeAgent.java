@@ -91,7 +91,7 @@ public class SlimeAgent extends SlimeAI implements Agent, Comparable{
             }
         }
         this.fitness = points/NUM_GAMES;
-        System.out.println(this.fitness);
+        //System.out.println(this.fitness);
 
         // Compute the average fitness independent of the number of games
         return this.fitness;
