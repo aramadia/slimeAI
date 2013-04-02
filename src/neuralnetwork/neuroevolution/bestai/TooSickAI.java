@@ -1,40 +1,39 @@
-package neuralnetwork.neuroevolution;
-
+package neuralnetwork.neuroevolution.bestai;
 
 import SlimeGame.*;
 import neuralnetwork.core.NeuralNetwork;
-import neuralnetwork.neuroevolution.bestai.DefenseAgent;
+import neuralnetwork.neuroevolution.Agent;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
-public class SlimeAgent extends SlimeAI implements Agent {
-	
-	public neuralnetwork.core.NeuralNetwork nn;
+public class TooSickAI extends SlimeAI implements Agent {
+
+	public NeuralNetwork nn;
 	//NeuralNetworkSlimeAi ai;
-	
+
 	public static final int NUM_HIDDEN_NODES = 25;
 	/** Outputs passed back to the input at each day */
 	public static final int NUM_MEMORY_NODES = 0;
 
     public static final int NUM_INPUT_NODES = 12;
     public static final int NUM_OUTPUT_NODES = 2;
-    
+
     public static final int DEFAULT_NUM_GAMES = 30;
 
-	
+
 	private static Random r = new Random();
-    private static final String SaveFile = "test.txt";
+    private static final String SaveFile = "toosick";
 
 
-    public SlimeAgent() {
+    public TooSickAI() {
     	int[] layerStructure = new int[] {NUM_INPUT_NODES, 45, NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
+        load();
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
-		nn.randomizeWeights();
 	}
-    
+
     /**
      * a*(1-r^n)/(1-r)
      * @param r
@@ -43,7 +42,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     private static final double geometricSum(double r, double n) {
     	return 1*(1 - Math.pow(r, n))/(1-r);
     }
-    
+
     private static final double weightNetCrosses(int n) {
     	double expNetCrosses = 0;
     	if (n != 0) {
@@ -52,23 +51,20 @@ public class SlimeAgent extends SlimeAI implements Agent {
     	return expNetCrosses;
 
     }
-	
+
 	public double evaluateFitness(int precision) {
 
 		// play a set deterministic series of games
 
         int NUM_GAMES = precision;
 
-        CrapSlimeAI crapAI = new CrapSlimeAI();
-        DannoAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
-        SlimeAI threeWaySwapAI = new ThreeSwapSlimeAI();
-        
-        ArrayList<SlimeAI> slimeAIs = new ArrayList<SlimeAI>();
-        slimeAIs.add(new DefenseAgent());
+        SlimeAI defenseAgent = new DefenseAgent();
+        SlimeAI beatsDefenseAgent = new BeatsDefenseAgent();
+        LinkedList<SlimeAI> slimeAIs = new LinkedList<SlimeAI>();
+        slimeAIs.add(defenseAgent);
         slimeAIs.add(dannoAI2);
-        slimeAIs.add(dannoAI);
-        slimeAIs.add(crapAI);
+        slimeAIs.add(beatsDefenseAgent);
         SwapSlimeAI swapSlimeAI = new SwapSlimeAI(slimeAIs);
 
         double points = 0.0;
@@ -91,9 +87,9 @@ public class SlimeAgent extends SlimeAI implements Agent {
         		side = SlimeV2.ServeSide.LEFT;
         	}
 
-            GameResult result = SlimeV2.determineVictor(false, side, swapSlimeAI, this, 1);
+            GameResult result = SlimeV2.determineVictor(false, side, ai, this, 1);
             final int WINNING_WEIGHT = 40;
-            
+
             if (result.getWinner() == 1) {
             	// weight winning faster.
             	// max is 40 - 1 = 39, min is 40 - 20 = 20 pts
@@ -119,9 +115,9 @@ public class SlimeAgent extends SlimeAI implements Agent {
 			}
 		}
 
-		SlimeAgent a = new SlimeAgent();
+		TooSickAI a = new TooSickAI();
 		a.nn.loadWeights(weights);
-		
+
 		return a;
 	}
 
@@ -158,7 +154,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     {
     	// what is the maximum velocity anyways?
     	final double maxVelocity = 50;
-    	
+
     	// normalize (-maxVelocity,maxVelocity) to (-1,1)
     	return (velocity ) / maxVelocity;
     }
@@ -169,23 +165,23 @@ public class SlimeAgent extends SlimeAI implements Agent {
         setVars();
     	double gameWidth = Constants.GAME_WIDTH;
     	double gameHeight = Constants.GAME_HEIGHT;
-    	
+
     	double whereWillBallCross = whereWillBallCross(125);
     	// normalize these inputs
         double[] inputs = new double[]{
-        		ballX / gameWidth, 
-        		ballY / gameHeight, 
-        		normalizeVelocity(ballVX), 
+        		ballX / gameWidth,
+        		ballY / gameHeight,
+        		normalizeVelocity(ballVX),
         		normalizeVelocity(ballVY),
         		(whereWillBallCross - p2X) / 50.0,
         		(ballX - p2X) / 50.0,
         		(ballY - p2Y) / 50.0,
-        		p1X / gameWidth, 
-//        		p1Y / gameHeight, 
-//        		normalizeVelocity(p1XV), 
-//        		normalizeVelocity(p1YV), 
-        		p2X / gameWidth, 
-        		p2Y / gameHeight, 
+        		p1X / gameWidth,
+//        		p1Y / gameHeight,
+//        		normalizeVelocity(p1XV),
+//        		normalizeVelocity(p1YV),
+        		p2X / gameWidth,
+        		p2Y / gameHeight,
 //        		normalizeVelocity(p2XV),
 //        		normalizeVelocity(p2YV),
         		1.0	// bias node
@@ -206,7 +202,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     }
 
     public static void main(String[] args) {
-    	
+
     	/*
     	 * 0 -> 0.0
 			1 -> 1.0
@@ -219,24 +215,24 @@ public class SlimeAgent extends SlimeAI implements Agent {
 			8 -> 6.731591374218749
 			9 -> 7.395011805507812
 			10 -> 8.025261215232419
-    	
+
     	for (int netCrosses = 0; netCrosses < 30; netCrosses++)
     	{
-        	double expNetCrosses = weightNetCrosses(netCrosses);  
+        	double expNetCrosses = weightNetCrosses(netCrosses);
         	System.out.println(netCrosses + " -> " + expNetCrosses);
     	}
     	 */
-    	
-    	
+
+
         ThreeSwapSlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-        SlimeAgent ai2 = new SlimeAgent();
+        TooSickAI ai2 = new TooSickAI();
         ai2.load();
-        
+
         SlimeAI crapAI = new CrapSlimeAI();
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI human = null;
-        SlimeGame.SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, human, ai2, 5);
+        SlimeV2.determineVictor(true, SlimeV2.ServeSide.RIGHT, human, ai2, 5);
     }
 
 	@Override

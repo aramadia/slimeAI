@@ -1,25 +1,13 @@
 package SlimeGame;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Panel;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import javax.swing.JFrame;
-
+import neuralnetwork.neuroevolution.SlimeAgent;
 import neuralnetwork.neuroevolution.bestai.DefenseAgent;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.concurrent.*;
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
     private static final long MAX_FRAMES = 50000;
@@ -328,7 +316,6 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
 
     public static void main(String args[]) {
-
         playRegularGame();
 //        theGauntlet();
     }
@@ -348,11 +335,12 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         slimeAIs.add(dannoAI);
         slimeAIs.add(crapSlimeAI);
         SwapSlimeAI swapSlimeAI = new SwapSlimeAI(slimeAIs);
-        GameResult result = determineVictor(true, serveSide, human, swapSlimeAI, 5);
+        SlimeAgent slimeAgent = new SlimeAgent();
+        slimeAgent.load();
+        GameResult result = determineVictor(true, serveSide, human, slimeAgent, 5);
         System.out.println("winner = player " + result.getWinner());
 
     }
-
 
     /**
      *
