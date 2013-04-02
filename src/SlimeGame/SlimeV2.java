@@ -3,6 +3,7 @@ package SlimeGame;
 
 import neuralnetwork.neuroevolution.SlimeAgent;
 import neuralnetwork.neuroevolution.bestai.DefenseAgent;
+import neuralnetwork.neuroevolution.bestai.TooSickAI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.util.concurrent.*;
 
 public class SlimeV2 implements Callable<GameResult>, Constants {
     private static final long MAX_FRAMES = 50000;
-    private static final int MAX_CONSECUTIVE_HITS = 8;
+    private static final int MAX_CONSECUTIVE_HITS = 15;
 
     public enum ServeSide {
         LEFT,
@@ -328,6 +329,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SlimeAI dannoAI = new DannoAI();
         SlimeAI dannoAI2 = new DannoAI2();
         SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
+        SlimeAI twoSickAI = new TooSickAI();
 
         LinkedList<SlimeAI> slimeAIs = new LinkedList<SlimeAI>();
         slimeAIs.add(new DefenseAgent());
@@ -337,7 +339,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         SwapSlimeAI swapSlimeAI = new SwapSlimeAI(slimeAIs);
         SlimeAgent slimeAgent = new SlimeAgent();
         slimeAgent.load();
-        GameResult result = determineVictor(true, serveSide, human, slimeAgent, 5);
+        GameResult result = determineVictor(true, serveSide, human, twoSickAI, 5);
         System.out.println("winner = player " + result.getWinner());
 
     }

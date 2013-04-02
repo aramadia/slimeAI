@@ -9,7 +9,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import neuralnetwork.neuroevolution.SlimeAgent;
 import neuralnetwork.neuroevolution.bestai.BeatsDefenseAgent;
+import neuralnetwork.neuroevolution.bestai.DefenseAgent;
+import neuralnetwork.neuroevolution.bestai.TooSickAI;
 import SlimeGame.SlimeV2.ServeSide;
 
 public class Gauntlet implements Callable<GameResult>{
@@ -43,6 +46,9 @@ public class Gauntlet implements Callable<GameResult>{
         challengers.add(new DannoAI());
         challengers.add(new DannoAI2());
         challengers.add(new ThreeSwapSlimeAI());
+        challengers.add(new TooSickAI());
+        challengers.add(new DefenseAgent());
+        challengers.add(new BeatsDefenseAgent());
         int[] wins = new int[challengers.size()];
 
         final int NTHREADS = Runtime.getRuntime().availableProcessors();
@@ -98,6 +104,8 @@ public class Gauntlet implements Callable<GameResult>{
     }
     
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-		theGauntlet( new BeatsDefenseAgent());
+    	SlimeAgent ai = new SlimeAgent();
+    	ai.load();
+		theGauntlet( ai);
 	}
 }

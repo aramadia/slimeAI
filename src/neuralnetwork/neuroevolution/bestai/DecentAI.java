@@ -1,17 +1,28 @@
-package neuralnetwork.neuroevolution;
+package neuralnetwork.neuroevolution.bestai;
 
 
-import SlimeGame.*;
-import neuralnetwork.core.NeuralNetwork;
-import neuralnetwork.neuroevolution.bestai.BeatsDefenseAgent;
-import neuralnetwork.neuroevolution.bestai.DefenseAgent;
-import neuralnetwork.neuroevolution.bestai.TooSickAI;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SlimeAgent extends SlimeAI implements Agent {
+import neuralnetwork.core.NeuralNetwork;
+import neuralnetwork.neuroevolution.Agent;
+import neuralnetwork.neuroevolution.SlimeAgent;
+import SlimeGame.Constants;
+import SlimeGame.CrapSlimeAI;
+import SlimeGame.DannoAI;
+import SlimeGame.DannoAI2;
+import SlimeGame.GameResult;
+import SlimeGame.SlimeAI;
+import SlimeGame.SlimeV2;
+import SlimeGame.SwapSlimeAI;
+import SlimeGame.ThreeSwapSlimeAI;
+
+public class DecentAI extends SlimeAI implements Agent {
 	
 	public neuralnetwork.core.NeuralNetwork nn;
 	//NeuralNetworkSlimeAi ai;
@@ -27,10 +38,10 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
 	
 	private static Random r = new Random();
-    private static final String SaveFile = "test.txt";
+    private static final String SaveFile = "decentai";
 
 
-    public SlimeAgent() {
+    public DecentAI() {
     	int[] layerStructure = new int[] {NUM_INPUT_NODES, 35, 15,NUM_OUTPUT_NODES};
 		nn = new NeuralNetwork(layerStructure);
     	//nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
@@ -233,7 +244,7 @@ public class SlimeAgent extends SlimeAI implements Agent {
     	
     	
         ThreeSwapSlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-        SlimeAgent ai2 = new SlimeAgent();
+        DecentAI ai2 = new DecentAI();
         ai2.load();
         
         SlimeAI crapAI = new CrapSlimeAI();
