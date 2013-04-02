@@ -84,9 +84,14 @@ public class SlimeAgent extends SlimeAI implements Agent, Comparable{
         	}
 
             GameResult result = SlimeV2.determineVictor(false, side, ai, this, 1);
+            final int WINNING_WEIGHT = 40;
+            
             if (result.getWinner() == 1) {
-                points += 10;
+            	// weight winning faster.
+            	// max is 40 - 1 = 39, min is 40 - 20 = 20 pts
+                points += WINNING_WEIGHT - weightNetCrosses(result.getRtlNetCrosses());
             } else {
+            	//max is about 20
             	points += weightNetCrosses(result.getRtlNetCrosses());
             }
         }
