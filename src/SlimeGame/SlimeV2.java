@@ -1,6 +1,5 @@
 package SlimeGame;
 
-import neuralnetwork.neuroevolution.SlimeAgent;
 import neuralnetwork.neuroevolution.bestai.DefenseAgent;
 
 import java.awt.Color;
@@ -29,6 +28,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
     SlimePanel panel = new SlimePanel();
     GameResult gameResult = new GameResult();
+    ServeSide side;
     boolean shouldDraw;
     int nWidth;
     int nHeight;
@@ -48,6 +48,7 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
     public SlimeV2(boolean draw, ServeSide side, SlimeAI ai1, SlimeAI ai2, int numStartingPoints) {
         shouldDraw = draw;
+        this.side = side;
         sides = new Side[2];
         sides[0] = new Side(this, true,
                 50, 445,
@@ -323,19 +324,31 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
 
 
     public static void main(String args[]) {
-//        SlimeAI human = null;
-//        SlimeAI loseAI = new LoseAI();
-//        SlimeAI crapSlimeAI = new CrapSlimeAI();
-//        SlimeAI dannoAI = new DannoAI();
-//        SlimeAI dannoAI2 = new DannoAI2();
-//        SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
-//        GameResult result = determineVictor(true, ServeSide.RIGHT, human, dannoAI, 5);
-//        System.out.println("winner = player " + result.getWinner());
-        theGauntlet();
+        playRegularGame();
+//        theGauntlet();
+    }
+
+    private static void playRegularGame() {
+        ServeSide serveSide = ServeSide.RIGHT;
+        SlimeAI human = null;
+        SlimeAI loseAI = new LoseAI();
+        SlimeAI crapSlimeAI = new CrapSlimeAI();
+        SlimeAI dannoAI = new DannoAI();
+        SlimeAI dannoAI2 = new DannoAI2();
+        SlimeAI threeSwapSlimeAI = new ThreeSwapSlimeAI();
+        LinkedList<SlimeAI> slimeAIs = new LinkedList<SlimeAI>();
+        slimeAIs.add(new DefenseAgent());
+        slimeAIs.add(dannoAI2);
+        slimeAIs.add(dannoAI);
+        slimeAIs.add(crapSlimeAI);
+        SwapSlimeAI swapSlimeAI = new SwapSlimeAI(slimeAIs);
+        GameResult result = determineVictor(true, serveSide, human, swapSlimeAI, 5);
+        System.out.println("winner = player " + result.getWinner());
+
     }
 
     public static void theGauntlet() {
-        SlimeAI evaluatedAI = new DefenseAgent();
+        SlimeAI evaluatedAI = new ThreeSwapSlimeAI();
         List<SlimeAI> challengers = new LinkedList<SlimeAI>();
         challengers.add(new CrapSlimeAI());
         challengers.add(new DannoAI());
@@ -346,10 +359,10 @@ public class SlimeV2 implements Callable<GameResult>, Constants {
         final int NTHREADS = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(NTHREADS);
         ArrayList<Future<Double>> futureFitness = new ArrayList<Future<Double>>();
-        int NUM_GAMES = 100;
-        int STARTING_POINTS = 5;
-        ServeSide side;
+        final int NUM_GAMES = 100;
+        final int STARTING_POINTS = 5;
         int totalWins = 0;
+        ServeSide side;
 
         for (int i = 0; i < challengers.size(); i++) {
             SlimeAI challenger = challengers.get(i);

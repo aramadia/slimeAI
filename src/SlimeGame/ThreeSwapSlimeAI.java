@@ -1,6 +1,5 @@
 package SlimeGame;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,28 +12,25 @@ import java.util.List;
  */
 public class ThreeSwapSlimeAI extends SlimeAI {
 
-    private List<SlimeAI> ais = new LinkedList<SlimeAI>();
+    private SwapSlimeAI swapSlimeAI;
 
     public ThreeSwapSlimeAI() {
+        List<SlimeAI> ais = new LinkedList<SlimeAI>();
         ais.add(new CrapSlimeAI());
         ais.add(new DannoAI());
         ais.add(new DannoAI2());
 
-        Collections.shuffle(ais);
+        swapSlimeAI = new SwapSlimeAI(ais);
     }
 
     @Override
     public void initialize(SlimeV2 slimeGame, Player player) {
         super.initialize(slimeGame, player);
-        for (SlimeAI ai : ais) {
-            ai.initialize(slimeGame, player);
-        }
+        swapSlimeAI.initialize(slimeGame, player);
     }
 
     @Override
     public void moveSlime() {
-        int currentAI = (slimeGame.balls[0].leftToRightCrosses + slimeGame.balls[0].rightToLeftCrosses) % ais.size();
-//        System.out.println("ThreeWay Slime AI using AI " + currentAI);
-        ais.get(currentAI).moveSlime();
+        swapSlimeAI.moveSlime();
     }
 }
