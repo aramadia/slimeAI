@@ -11,7 +11,9 @@ public interface Agent extends Callable<Double>{
 	 * @return
 	 */
 	public Agent mutate(double mutationRate);
-
+	public neuralnetwork.core.NeuralNetwork getNN();
+	public double getFitness();
+	public void setWeights(double[] weights);
     public void save();
     public void load();
     

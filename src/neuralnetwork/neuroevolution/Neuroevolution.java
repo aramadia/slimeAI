@@ -13,6 +13,8 @@ import java.util.concurrent.Future;
 
 import javax.swing.JFrame;
 
+import neuralnetwork.core.NeuralNetwork;
+
 import SlimeGame.GameResult;
 
 import lattice.Engine;
@@ -21,7 +23,7 @@ public class Neuroevolution implements Runnable{
 
 	private static final double mutationRate = .025;
 	private static final boolean verbose = true;
-	final int numAgents = 60; //30
+	final int numAgents = 30; //30
 	final int numIterations = 2000;
 	
 	static DiscreteDataSet bestFitnessDS = new DiscreteDataSet();
@@ -37,16 +39,17 @@ public class Neuroevolution implements Runnable{
 		
 		Random r = new Random();
 
-		Agent[] agents = new Agent[numAgents];
+		Agent[] parents = new Agent[numAgents];
 		double[] fitness = new double[numAgents];
-		RouletteWheel wheel = new RouletteWheel();
+
+		//RouletteWheel wheel = new RouletteWheel();
 		
 		allBestAgent = null;
 		allBestFitness = 0.0;
 
 		// Make a population of random agents
 		for (int i = 0; i < numAgents; i++) {
-			agents[i] = new SlimeAgent();
+			parents[i] = new SlimeAgent();
 
 		}
 		
@@ -56,40 +59,46 @@ public class Neuroevolution implements Runnable{
 		
 
 		for (int iteration = 0; iteration < numIterations; iteration++) {
+			assert numAgents == parents.length;
 			
-            finishedIteration = false;
-
 			// Evaluate fitness
 			double totalFitness = 0;
 			double realTotalFitness = 0;
 			double bestFitness = 0;
 			
-			wheel.clear();
 			futureFitness.clear();
+
+			// Crossover new population
+			Agent[] children = performCrossover(parents);
 			
-			// evaluate all the fitnesses
+			if(iteration == 0)
+				parents = new Agent[0];
 			
-			for (int i = 0; i < agents.length; i++) {
-				Future<Double> f = service.submit(agents[i]);
+			// Mutate
+			performMutation(children);
+
+			// Evaluate
+			
+			for (int i = 0; i < children.length; i++) {
+				Future<Double> f = service.submit(children[i]);
 				futureFitness.add(f);
 			}
 			
-			for (int i = 0; i < agents.length; i++) {
+			for (int i = 0; i < children.length; i++) {
 				//fitness[i] = agents[i].evaluateFitness();
 				
 				fitness[i] = futureFitness.get(i).get();
-								
+				
 				if (fitness[i] > allBestFitness) {
-					allBestAgent = agents[i];
+					allBestAgent = children[i];
 					allBestFitness = fitness[i];
 				}
 				bestFitness = Math.max(bestFitness, fitness[i]);
 				realTotalFitness += fitness[i];
-
-				wheel.addAgent(agents[i], fitness[i]);
+				
+				//wheel.addAgent(agents[i], fitness[i]);
 
 			}
-			wheel.process();
 			
 			if (iteration % 25 == 24) {
 				// print best iteration
@@ -108,35 +117,94 @@ public class Neuroevolution implements Runnable{
 			
 			bestFitnessDS.addPoint(bestFitness);
 			avgFitnessDS.addPoint(avgFitness);
-
 			
-
-			// Rebuild new population
-			ArrayList<Agent> newPopulation = new ArrayList<Agent>(numAgents);
-
-			for (int n = 0; n < numAgents; n++) {
-				Agent curAgent = wheel.getAgent();
-
-				
-				newPopulation.add(curAgent.mutate(mutationRate));
-
-			}
-
-			Object[] temp = newPopulation.toArray();
-			for (int i = 0; i < temp.length; i++) {
-				agents[i] = (Agent) temp[i];
-			}
+			Agent[] allAgents = new Agent[parents.length + children.length];
+			System.arraycopy(parents, 0, allAgents, 0, parents.length);
+			System.arraycopy(children, 0, allAgents, parents.length, children.length);
+			Arrays.sort(allAgents);
 			
-			//Finished
-			finishedIteration = true;
-			
+			parents = performSelect(allAgents);	
+
         }
         System.out.println("evolve finished");
         allBestAgent.save();
 
     }
-
-	@Override
+    
+    Agent[] performSelect(Agent[] allAgents){    	
+    	Agent[] newGenAgents = new Agent[numAgents];
+    	// Get top n agents from the current pool
+    	int numTopAgents = 2;
+    	for(int i = 0; i<numTopAgents; i++){
+    		newGenAgents[i] = allAgents[allAgents.length-1-i];
+    	}
+    	
+    	// Use Roulette wheel to select the rest numAgents-numTopAgents agents by using roulette wheel
+    	double totalFitness = 0;
+    	assert numTopAgents <= allAgents.length;
+    	int numRemainingAgents = allAgents.length-numTopAgents;
+		for (int i = 0; i<numRemainingAgents; i++) {
+			totalFitness += allAgents[i].getFitness();
+		}
+		if (totalFitness == 0.0){
+			return allAgents;
+		}
+		double[] prob = new double[numRemainingAgents];
+		for (int i = 0; i < prob.length; i++) {
+			prob[i] = allAgents[i].getFitness() / totalFitness;
+			if (i > 0)
+				prob[i] += prob[i - 1];
+		}
+		
+    	for(int i = numTopAgents; i<numAgents; i++){
+    		double r = Math.random();
+    		for (int j = 0; j < numRemainingAgents; j++) {
+    			if (r < prob[j]) {
+    				newGenAgents[i] = allAgents[j];
+    			}
+    		}
+    		
+    	}
+    	assert newGenAgents.length == numAgents;
+    	return newGenAgents;
+    }
+    void performMutation(Agent[] population){
+    	for (int n = 0; n < numAgents; n++) {		
+    		Agent curAgent = population[n];
+			curAgent.mutate(mutationRate);
+		}
+    }
+    Agent[] performCrossover(Agent[] parents) {
+    	Agent[] children = new Agent[numAgents];
+    	for(int i = 0; i<parents.length/2; i++){
+    		Agent parent1 = parents[2*i];
+    		Agent parent2 = parents[2*i+1];
+    		double[] weights_1 = parent1.getNN().retrieveWeights();
+    		double[] weights_2 = parent2.getNN().retrieveWeights();
+    		Random r = new Random();
+    		int crossoverPoint = r.nextInt(weights_1.length);
+    		double[] new_weights_1 = new double[weights_1.length];
+    		double[] new_weights_2 = new double[weights_1.length];
+    		for(int j = 0; j<weights_1.length; j++){
+    			if(j<=crossoverPoint){
+    				new_weights_1[j] = weights_1[j];
+    				new_weights_2[j] = weights_2[j];
+    			}
+    			else {
+    				new_weights_1[j] = weights_2[j];
+    				new_weights_2[j] = weights_1[j];
+    			}
+    		}
+    		Agent child1 = new SlimeAgent();
+    		child1.setWeights(new_weights_1);
+    		Agent child2 = new SlimeAgent();
+    		child2.setWeights(new_weights_2);
+    		children[2*i] = child1;
+    		children[2*i+1] = child2;
+    	}
+		return children;
+    }
+    @Override
 	public void run() {
 		try {
 			evolve();

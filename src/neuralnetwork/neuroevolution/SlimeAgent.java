@@ -5,7 +5,9 @@ import SlimeGame.*;
 import java.io.*;
 import java.util.Random;
 
-public class SlimeAgent extends SlimeAI implements Agent {
+import neuralnetwork.core.NeuralNetwork;
+
+public class SlimeAgent extends SlimeAI implements Agent, Comparable{
 	
 	public neuralnetwork.core.NeuralNetwork nn;
 	//NeuralNetworkSlimeAi ai;
@@ -16,11 +18,12 @@ public class SlimeAgent extends SlimeAI implements Agent {
 
     public static final int NUM_INPUT_NODES = 12;
     public static final int NUM_OUTPUT_NODES = 2;
-
+    
 	
 	private static Random r = new Random();
     private static final String SaveFile = "test.txt";
 
+    private double fitness = 0.0;
 
     public SlimeAgent() {
 		nn = new neuralnetwork.core.NeuralNetwork(NUM_INPUT_NODES + NUM_MEMORY_NODES, NUM_HIDDEN_NODES, NUM_OUTPUT_NODES + NUM_MEMORY_NODES);
@@ -63,7 +66,9 @@ public class SlimeAgent extends SlimeAI implements Agent {
                 wins++;
             }
         }
-
+        
+        this.fitness = wins;
+        System.out.println(this.fitness);
         return wins;
 	}
 
@@ -172,5 +177,29 @@ public class SlimeAgent extends SlimeAI implements Agent {
 	@Override
 	public Double call() throws Exception {
 		return evaluateFitness();
+	}
+
+	@Override
+	public NeuralNetwork getNN() {
+		return nn;
+	}
+
+	@Override
+	public void setWeights(double[] weights) {
+		nn.loadWeights(weights);
+	}
+
+	@Override
+	public int compareTo(Object anotherAgent) throws ClassCastException {
+		if (!(anotherAgent instanceof Agent))
+		      throw new ClassCastException("An Agent object expected.");
+		double anotherFitness = ((Agent) anotherAgent).getFitness();
+		int comparison = this.getFitness() - anotherFitness >= 0 ? 1 : -1; 
+		return comparison;
+	}
+	
+	@Override
+	public double getFitness() {
+		return fitness;
 	}
 }
